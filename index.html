@@ -285,21 +285,21 @@
             'urbanway-12m': {
                 title: 'Iveco Urbanway 12M',
                 buses: [
-                    { evc: '707', spz: '5L0 4271', year: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '708', spz: '5L0 4269', year: '', paint: 'CVR Môc' },
-                    { evc: '709', spz: '5L0 4270', year: '', paint: 'CVR Funpark Babylon' },
-                    { evc: '710', spz: '5L0 4268', year: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '711', spz: '5L0 4781', year: '', paint: 'Rádio Kiss, Beat a Country' },
-                    { evc: '712', spz: '5L0 4780', year: '', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '713', spz: '5L0 9564', year: '', paint: 'CVR Hitrádio contact' },
-                    { evc: '714', spz: '5L0 9563', year: '', paint: 'CVR Foodora' },
-                    { evc: '715', spz: '5L0 9562', year: '', paint: 'Pekárna u Papíráku (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '716', spz: '5L0 9561', year: '', paint: 'CVR Foodora a Môc' },
-                    { evc: '717', spz: '5L0 9560', year: '', paint: 'Rádio Žurnál (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '718', spz: '5L3 1340', year: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '719', spz: '5L3 1349', year: '', paint: 'Kittler Dent (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '720', spz: '6L5 5921', year: '', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '721', spz: '5L3 0819', year: '', paint: 'ELITE home reality (schema DP Liberec, zeleno-žluto-bílá)' }
+                    { evc: '707', spz: '5L0 4271', year: '2015', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '708', spz: '5L0 4269', year: '2015', paint: 'CVR Môc' },
+                    { evc: '709', spz: '5L0 4270', year: '2015', paint: 'CVR Funpark Babylon' },
+                    { evc: '710', spz: '5L0 4268', year: '2015', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '711', spz: '5L0 4781', year: '2015', paint: 'CVR Rádio Kiss, Beat a Country' },
+                    { evc: '712', spz: '5L0 4780', year: '2015', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '713', spz: '5L0 9564', year: '2016', paint: 'CVR Hitrádio contact' },
+                    { evc: '714', spz: '5L0 9563', year: '2016', paint: 'CVR Foodora' },
+                    { evc: '715', spz: '5L0 9562', year: '2016', paint: 'Pekárna u Papíráku (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '716', spz: '5L0 9561', year: '2016', paint: 'CVR Foodora a Môc' },
+                    { evc: '717', spz: '5L0 9560', year: '2016', paint: 'Rádio Žurnál (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '718', spz: '5L3 1340', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '719', spz: '5L3 1349', year: '2017', paint: 'Kittler Dent (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '720', spz: '6L5 5921', year: '2017', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '721', spz: '5L3 0819', year: '2017', paint: 'ELITE home reality (schema DP Liberec, zeleno-žluto-bílá)' }
                 ]
             },
             'urbanway-12m-cng': {
@@ -462,7 +462,7 @@
                     ? 'bg-purple-900/40 text-purple-300 border-purple-700/50' 
                     : 'bg-green-900/40 text-green-300 border-green-700/50';
                 
-                const badgeText = isCVR ? 'CVR (Celovozová reklama)' : 'Standardní nátěr / Lokální reklama';
+                const badgeText = isCVR ? 'CVR (Celovozová reklama)' : 'Schéma DP Liberec, zeleno-žluto-bílá';
 
                 const card = document.createElement('div');
                 card.className = 'bg-brand-card rounded-2xl overflow-hidden border border-brand-border flex flex-col';
