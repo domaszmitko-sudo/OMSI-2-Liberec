@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liberec ve hře Omsi 2</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    
+    <!-- Google Fonts: Inter pro běžný text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        europa: ['EuropaGrotesk', 'sans-serif'], // Tvůj vlastní font pro čísla
+                        spz: ['CZSPZ', 'sans-serif'], // Tvůj font pro SPZ
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#0b0b0b',       // Černé pozadí (černý režim)
+                            nav: '#085447',      // Zelená navigace
+                            yellow: '#d49303',   // Oranžový akcent (název třídy ponechán kvůli kompatibilitě)
+                            green: '#085447',    // Zelená
+                            card: '#161616',     // Pozadí karet
+                            border: '#2a2a2a',
+                            grayHeader: '#1f1f1f',// Šedá hlavička pro tabulku značek
+                            rowGreen: '#0a2e29'   // Tmavě zelené pozadí pro řádky v seznamu
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Načtení vlastního fontu pro evidenční čísla */
+        @font-face {
+            font-family: 'EuropaGrotesk';
+            src: url('europa-grotesk-sh-bold.otf') format('opentype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        /* Načtení vlastního fontu pro SPZ */
+        @font-face {
+            font-family: 'CZSPZ';
+            src: url('czspz.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html { color-scheme: dark; background: #0b0b0b; }
+
+        /* SPA Skrývání obsahu */
+        .spa-section { display: none; }
+        .spa-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Vlastní scrollování */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0b0b0b; }
+        ::-webkit-scrollbar-thumb { background: #085447; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d49303; }
+    </style>
+</head>
+<body class="bg-brand-bg text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-yellow selection:text-black">
+
+    <!-- Navbar -->
+    <div class="px-4 pt-6 pb-2 sticky top-0 z-50">
+        <nav class="max-w-6xl mx-auto bg-brand-nav rounded-full px-6 py-3 flex justify-between items-center shadow-lg border border-white/10">
+            <button onclick="navigate('home')" class="font-bold text-lg tracking-tight text-white hover:text-brand-yellow transition-colors">
+                Liberec ve hře Omsi 2
+            </button>
+
+            <div class="hidden md:flex gap-8 items-center text-sm font-medium">
+                <button onclick="navigate('home')" class="nav-btn text-white hover:text-brand-yellow transition-colors" data-target="home">Domů</button>
+                <button onclick="navigate('list-autobusy')" class="nav-btn text-gray-300 hover:text-brand-yellow transition-colors" data-target="list-autobusy">Autobusy</button>
+                <button onclick="navigate('mapa')" class="nav-btn text-gray-300 hover:text-brand-yellow transition-colors" data-target="mapa">Schéma mapy</button>
+            </div>
+
+            <button id="mobile-menu-btn" class="md:hidden font-bold text-sm text-brand-yellow uppercase tracking-wider">
+                Menu
+            </button>
+        </nav>
+
+        <div id="mobile-menu" class="hidden max-w-6xl mx-auto mt-2 bg-brand-card rounded-2xl p-4 border border-brand-border md:hidden flex flex-col gap-2 shadow-xl">
+            <button onclick="navigate('home')" class="text-left font-bold p-3 bg-brand-bg rounded-lg hover:text-brand-yellow transition-colors">Domů</button>
+            <button onclick="navigate('list-autobusy')" class="text-left font-bold p-3 bg-brand-bg rounded-lg hover:text-brand-yellow transition-colors">Autobusy</button>
+            <button onclick="navigate('mapa')" class="text-left font-bold p-3 bg-brand-bg rounded-lg hover:text-brand-yellow transition-colors">Schéma mapy</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-8 md:py-12">
+        
+        <!-- SECTION: HOME -->
+        <section id="sec-home" class="spa-section active">
+
+            <!-- Nadpis -->
+            <header class="text-center mb-12">
+                <p class="text-sm font-bold uppercase tracking-widest text-brand-yellow mb-3">Fanouškovský projekt</p>
+                <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-[1.1]">
+                    Liberec <span class="text-brand-yellow">ve hře</span> Omsi 2
+                </h1>
+            </header>
+
+            <div class="max-w-3xl mx-auto flex flex-col gap-12">
+
+                <!-- AKTUALITY (uprostřed) -->
+                <div>
+                    <div class="flex items-center gap-4 mb-6">
+                        <h2 class="text-2xl font-black tracking-tight text-white">Aktuality</h2>
+                        <div class="h-px flex-1 bg-brand-border"></div>
+                    </div>
+                    <div id="news-list" class="flex flex-col gap-4"></div>
+                </div>
+
+                <!-- POPIS PROJEKTU -->
+                <div class="bg-brand-card rounded-3xl p-8 border border-brand-border">
+                    <h2 class="text-2xl font-black tracking-tight text-white mb-4">O projektu</h2>
+                    <div class="text-gray-400 leading-relaxed flex flex-col gap-4">
+                        <p>
+                            Liberec ve hře Omsi 2 je fanouškovský projekt, jehož cílem je přenést do simulátoru
+                            městskou dopravu v Liberci a okolí. Vozový park Dopravního podniku měst Liberce
+                            a Jablonce nad Nisou, linky i prostředí se snažím zpracovat co nejvěrněji.
+                        </p>
+                        <p>
+                            Na stránce najdeš přehled vozidel s evidenčními čísly, SPZ a reklamními polepy
+                            a také schéma mapy. Nové informace o postupu prací se objevují v aktualitách výše.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KARTY: Autobusy + Schéma mapy -->
+            <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
+
+                <button onclick="navigate('list-autobusy')" class="group text-left bg-brand-green rounded-3xl p-8 border border-white/10 hover:border-brand-yellow transition-colors flex flex-col gap-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-yellow">Vozový park</span>
+                    <span class="text-3xl font-black text-white">Autobusy</span>
+                    <span class="text-sm text-gray-200/80 leading-relaxed">Evidenční čísla, SPZ a polepy všech vozidel.</span>
+                    <span class="mt-4 flex items-end justify-between">
+                        <span><span id="bus-total" class="font-europa text-5xl text-white">0</span> <span class="text-sm text-gray-200/80">vozidel</span></span>
+                        <span class="text-brand-yellow font-bold group-hover:translate-x-1 transition-transform">&rarr;</span>
+                    </span>
+                </button>
+
+                <button onclick="navigate('mapa')" class="group text-left bg-brand-card rounded-3xl p-8 border border-brand-border hover:border-brand-yellow transition-colors flex flex-col gap-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-yellow">Trasy a zastávky</span>
+                    <span class="text-3xl font-black text-white">Schéma mapy</span>
+                    <span class="text-sm text-gray-400 leading-relaxed">Přehled mapy Liberce a okolí ve hře.</span>
+                    <span class="mt-4 flex items-end justify-end">
+                        <span class="text-brand-yellow font-bold group-hover:translate-x-1 transition-transform">&rarr;</span>
+                    </span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION: SCHÉMA MAPY -->
+        <section id="sec-mapa" class="spa-section">
+            <div class="mb-8">
+                <h2 class="text-4xl font-black tracking-tight text-white mb-2">Schéma mapy</h2>
+                <p class="text-gray-400 font-medium">Přehled mapy Liberce ve hře Omsi 2.</p>
+            </div>
+            <div class="bg-brand-card rounded-3xl border border-brand-border overflow-hidden">
+                <div class="relative min-h-[300px] bg-brand-bg flex items-center justify-center">
+                    <img src="schema-mapy.png" alt="Schéma mapy" class="w-full h-auto"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="hidden flex-col items-center justify-center text-gray-600 p-10 text-center">
+                        <span class="text-sm font-bold uppercase tracking-widest mb-2">Schéma mapy chybí</span>
+                        <span class="text-xs">Nahraj obrázek jako <code class="text-brand-yellow">schema-mapy.png</code> vedle index.html</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: SEZNAM AUTOBUSŮ (Kategorie / Tabulka) -->
+        <section id="sec-list-autobusy" class="spa-section">
+            <div class="mb-8">
+                <h2 class="text-4xl font-black tracking-tight text-white mb-2">Autobusy</h2>
+                <p class="text-gray-400 font-medium">Přehled značek a typů ve vozovém parku.</p>
+            </div>
+
+            <!-- Tabulka Značek (Inspirováno fotkou č. 4) -->
+            <div class="flex flex-col gap-6">
+                
+                <!-- Irisbus -->
+                <div class="border border-brand-border rounded-lg overflow-hidden">
+                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                        <h3 class="text-xl font-bold text-gray-200">Irisbus</h3>
+                    </div>
+                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <span class="font-bold text-gray-100 min-w-[120px] uppercase tracking-wide text-sm">Citelis</span>
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="showGrid('citelis-12m')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">Citelis 12M</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Iveco -->
+                <div class="border border-brand-border rounded-lg overflow-hidden">
+                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                        <h3 class="text-xl font-bold text-gray-200">Iveco</h3>
+                    </div>
+                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <span class="font-bold text-gray-100 min-w-[120px] uppercase tracking-wide text-sm">Urbanway</span>
+                        <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                            <button onclick="showGrid('urbanway-12m')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">Urbanway 12M</button>
+                            <button onclick="showGrid('urbanway-12m-cng')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">Urbanway 12M CNG</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOR -->
+                <div class="border border-brand-border rounded-lg overflow-hidden">
+                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                        <h3 class="text-xl font-bold text-gray-200">SOR</h3>
+                    </div>
+                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <span class="font-bold text-gray-100 min-w-[120px] uppercase tracking-wide text-sm">NS</span>
+                        <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                            <button onclick="showGrid('sor-ns-12')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">NS 12</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION: BUS GRID (Mřížka karet konkrétního modelu) -->
+        <section id="sec-grid" class="spa-section">
+            
+            <button onclick="navigate('list-autobusy')" class="text-brand-yellow hover:text-white text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 transition-colors">
+                &larr; Zpět na seznam autobusů
+            </button>
+
+            <div class="border-b border-brand-border pb-6 mb-8 flex flex-col sm:flex-row justify-between items-end gap-4">
+                <div>
+                    <h2 id="grid-title" class="text-4xl font-black tracking-tight text-white mb-2">...</h2>
+                    <p id="grid-subtitle" class="text-gray-400 font-medium">Evidence vozů</p>
+                </div>
+                <div class="bg-brand-card text-brand-yellow font-bold px-5 py-2.5 rounded-full text-sm border border-brand-border">
+                    Celkem vozů: <span id="grid-count">0</span>
+                </div>
+            </div>
+
+            <!-- Container pro karty -->
+            <div id="bus-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Generováno pomocí JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-auto py-8 text-center border-t border-brand-border">
+        <p class="text-sm font-bold text-gray-600">Liberec ve hře Omsi 2 &copy; Neoficiální fanouškovský projekt</p>
+    </footer>
+
+    <script>
+        // --- DATA ---
+        const db = {
+            'citelis-12m': {
+                title: 'Irisbus Citelis 12M',
+                buses: [
+                    { evc: '701', spz: '4L5 4824', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '702', spz: '4L5 4825', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '703', spz: '4L5 4826', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '704', spz: '4L5 4827', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '705', spz: '4L5 4828', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '706', spz: '6L5 6239', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                ]
+            },
+            'urbanway-12m': {
+                title: 'Iveco Urbanway 12M',
+                buses: [
+                    { evc: '707', spz: '5L0 4271', year: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '708', spz: '5L0 4269', year: '', paint: 'CVR Môc' },
+                    { evc: '709', spz: '5L0 4270', year: '', paint: 'CVR Funpark Babylon' },
+                    { evc: '710', spz: '5L0 4268', year: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '711', spz: '5L0 4781', year: '', paint: 'Rádio Kiss, Beat a Country' },
+                    { evc: '712', spz: '5L0 4780', year: '', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '713', spz: '5L0 9564', year: '', paint: 'CVR Hitrádio contact' },
+                    { evc: '714', spz: '5L0 9563', year: '', paint: 'CVR Foodora' },
+                    { evc: '715', spz: '5L0 9562', year: '', paint: 'Pekárna u Papíráku (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '716', spz: '5L0 9561', year: '', paint: 'CVR Foodora a Môc' },
+                    { evc: '717', spz: '5L0 9560', year: '', paint: 'Rádio Žurnál (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '718', spz: '5L3 1340', year: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '719', spz: '5L3 1349', year: '', paint: 'Kittler Dent (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '720', spz: '6L5 5921', year: '', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '721', spz: '5L3 0819', year: '', paint: 'ELITE home reality (schema DP Liberec, zeleno-žluto-bílá)' }
+                ]
+            },
+            'urbanway-12m-cng': {
+                title: 'Iveco Urbanway 12M CNG',
+                buses: [
+                    { evc: '528', spz: '7L0 0144', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '529', spz: '5L6 0911', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '530', spz: '5L6 0912', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '531', spz: '5L7 6896', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '532', spz: '5L6 0914', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '533', spz: '5L6 0915', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '534', spz: '5L6 0916', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '535', spz: '5L6 0917', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '536', spz: '5L6 0918', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '537', spz: '5L6 3847', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '538', spz: '5L6 3848', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '539', spz: '5L6 3849', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '540', spz: '5L6 3850', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '541', spz: '5L6 3851', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '542', spz: '5L6 3852', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '543', spz: '5L6 3853', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '544', spz: '5L6 3854', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                ]
+            },
+            'sor-ns-12': {
+                title: 'SOR NS 12',
+                buses: [
+                    { evc: '722', spz: '6L0 5168', year: '2020', paint: 'CVR Seca CZ - podlahy FeelWood, zeleno-šedá s fotopolepem' },
+                    { evc: '723', spz: '6L0 4346', year: '2020', paint: 'CVR ETK - agentura práce, modrá & CVR Service Plus - chráněná dílna, bílá' },
+                    { evc: '724', spz: '6L0 4768', year: '2020', paint: 'CVR A-net, modro-oranžová' },
+                    { evc: '725', spz: '6L0 4979', year: '2020', paint: 'CVR ZUŠ Liberec, barevná grafika' },
+                    { evc: '726', spz: '6L0 5627', year: '2021', paint: 'CVR Bauhaus, šedo-bílá grafika' },
+                    { evc: '727', spz: '6L0 5628', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '728', spz: '6L0 5629', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '729', spz: '6L0 5630', year: '2021', paint: 'CVR Flector, bílo-modrá grafika' },
+                    { evc: '730', spz: '6L0 5631', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '731', spz: '6L0 5632', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '732', spz: '6L0 5633', year: '2021', paint: 'CVR Condrosulf, bílo-modrá grafika' },
+                    { evc: '733', spz: '6L0 5634', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '734', spz: '6L3 6901', year: '2022', paint: 'CVR Fajn skupina, modro-oranžová' },
+                    { evc: '735', spz: '6L3 6902', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '736', spz: '6L3 6903', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '737', spz: '6L3 6904', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '738', spz: '6L3 6905', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '739', spz: '6L3 6906', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '740', spz: '6L3 6907', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '741', spz: '6L3 6908', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '742', spz: '6L5 6576', year: '2023', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '743', spz: '6L5 6573', year: '2023', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                ]
+            }
+        };
+
+        // --- ZÁLOŽNÍ AKTUALITY (použijí se jen, když se nenačte news.json) ---
+        const news = [
+            { date: '29. 10. 2026', title: 'Spuštění nového webu', text: 'Stránka Liberec ve hře Omsi 2 má nový vzhled. Najdeš na ní přehled autobusů i schéma mapy.' },
+            { date: '28. 10. 2026', title: 'Pokračují práce na Iveco Urbanway', text: 'Úprava Urbanwayů do libereckého provedení je téměř hotová, dolaďuje se vnitřní informační panel.' }
+        ];
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                              .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        // Text z Discordu: escapování, odkazy a zalomení řádků
+        function formatText(str) {
+            return escapeHtml(str)
+                .replace(/(https?:\/\/[^\s<&]+)/g, '<a href="$1" target="_blank" rel="noopener" class="text-brand-yellow underline">$1</a>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function renderNews(items) {
+            const list = document.getElementById('news-list');
+            if (!items.length) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-6">Zatím žádné aktuality.</p>';
+                return;
+            }
+            list.innerHTML = items.map(n => `
+                <article class="bg-brand-card rounded-2xl p-6 border border-brand-border border-l-4 border-l-brand-yellow">
+                    <p class="text-xs font-bold uppercase tracking-widest text-brand-yellow mb-2">${escapeHtml(n.date)}</p>
+                    <h3 class="text-xl font-bold text-white mb-2">${escapeHtml(n.title)}</h3>
+                    ${n.image && n.image.startsWith('news-img/') ? `<img src="${escapeHtml(n.image)}" alt="" loading="lazy" class="rounded-xl border border-brand-border mb-3 w-full h-auto">` : ''}
+                    ${n.text ? `<p class="text-gray-400 leading-relaxed">${formatText(n.text)}</p>` : ''}
+                </article>
+            `).join('');
+        }
+
+        // Aktuality se načítají z news.json (plní ho GitHub Action z Discordu).
+        // Pokud se soubor nepodaří načíst (např. otevření index.html přímo z disku), použije se pole news výše.
+        async function loadNews() {
+            try {
+                const r = await fetch('news.json', { cache: 'no-cache' });
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                renderNews(await r.json());
+            } catch (e) {
+                renderNews(news);
+            }
+        }
+
+        loadNews();
+        document.getElementById('bus-total').textContent =
+            Object.values(db).reduce((sum, m) => sum + m.buses.length, 0);
+
+        // --- MOBILE MENU LOGIC ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if(mobileMenu.classList.contains('hidden')) {
+                mobileMenuBtn.textContent = 'MENU';
+            } else {
+                mobileMenuBtn.textContent = 'ZAVŘÍT';
+            }
+        });
+
+        // --- SPA NAVIGATION ---
+        function navigate(sectionId) {
+            mobileMenu.classList.add('hidden');
+            mobileMenuBtn.textContent = 'MENU';
+
+            // Zvýraznění aktivního linku v navbaru (podle data-target)
+            const target = sectionId.startsWith('list-') ? sectionId : sectionId;
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.target === target) {
+                    btn.classList.add('text-white');
+                    btn.classList.remove('text-gray-300');
+                } else {
+                    btn.classList.remove('text-white');
+                    btn.classList.add('text-gray-300');
+                }
+            });
+
+            // Přepnutí sekcí
+            document.querySelectorAll('.spa-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('sec-' + sectionId).classList.add('active');
+        }
+
+        // --- RENDER GRID KARET ---
+        function showGrid(modelId) {
+            // Přepnutí UI do Grid režimu
+            document.querySelectorAll('.spa-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('sec-grid').classList.add('active');
+
+            const grid = document.getElementById('bus-grid');
+            grid.innerHTML = '';
+            
+            const categoryData = db[modelId];
+            
+            // Nastavení titulků
+            document.getElementById('grid-title').textContent = categoryData.title;
+            document.getElementById('grid-count').textContent = categoryData.buses.length;
+
+            categoryData.buses.forEach((bus) => {
+                const imgName = `${bus.evc}_1.png`;
+                const isCVR = bus.paint.includes('CVR');
+                
+                // Určení barvy štítku na základě nátěru
+                const badgeColorClass = isCVR 
+                    ? 'bg-purple-900/40 text-purple-300 border-purple-700/50' 
+                    : 'bg-green-900/40 text-green-300 border-green-700/50';
+                
+                const badgeText = isCVR ? 'CVR (Celovozová reklama)' : 'Standardní nátěr / Lokální reklama';
+
+                const card = document.createElement('div');
+                card.className = 'bg-brand-card rounded-2xl overflow-hidden border border-brand-border flex flex-col';
+                
+                card.innerHTML = `
+                    <div class="h-56 bg-brand-bg relative w-full border-b border-brand-border">
+                        <img src="${imgName}" alt="Bus ${bus.evc}" 
+                             class="w-full h-full object-cover"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        
+                        <div class="absolute inset-0 z-0 hidden flex-col items-center justify-center text-gray-600 bg-brand-bg">
+                            <span class="text-sm font-bold uppercase tracking-widest">Fotografie chybí</span>
+                        </div>
+                    </div>
+
+                    <div class="p-6 flex flex-col flex-1">
+                        <div class="mb-4 flex justify-between items-start gap-3">
+                            <div>
+                                <!-- Evidenční číslo s custom fontem -->
+                                <h3 class="text-4xl font-europa text-white mb-1 leading-none">${bus.evc}</h3>
+                                <p class="text-sm font-bold text-gray-500 uppercase tracking-wide">
+                                    ${categoryData.title} ${bus.year ? `<span class="text-gray-400">(${bus.year})</span>` : ''}
+                                </p>
+                            </div>
+                            <!-- SPZ s custom fontem -->
+                            <div class="bg-gray-100 text-black px-2 py-1 rounded shadow-sm border border-gray-300 flex items-center justify-center">
+                                <span class="font-spz text-lg leading-none tracking-widest">${bus.spz}</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto border-t border-brand-border pt-4">
+                            <!-- Barevný štítek typu reklamy -->
+                            <span class="inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider rounded border ${badgeColorClass} mb-3">
+                                ${badgeText}
+                            </span>
+                            
+                            <p class="text-sm font-medium text-gray-300 leading-relaxed">
+                                ${bus.paint}
+                            </p>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
