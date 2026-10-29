@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liberec ve hře Omsi 2</title>
+    <meta name="theme-color" content="#085447">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23085447%22/%3E%3Crect x=%229%22 y=%2213%22 width=%2246%22 height=%2233%22 rx=%227%22 fill=%22%23d49303%22/%3E%3Crect x=%2214%22 y=%2218%22 width=%2215%22 height=%2211%22 rx=%222.5%22 fill=%22%230b0b0b%22/%3E%3Crect x=%2232%22 y=%2218%22 width=%2218%22 height=%2211%22 rx=%222.5%22 fill=%22%230b0b0b%22/%3E%3Crect x=%229%22 y=%2234%22 width=%2246%22 height=%223%22 fill=%22%230b0b0b%22 opacity=%22.25%22/%3E%3Ccircle cx=%2221%22 cy=%2247%22 r=%226%22 fill=%22%230b0b0b%22/%3E%3Ccircle cx=%2243%22 cy=%2247%22 r=%226%22 fill=%22%230b0b0b%22/%3E%3Ccircle cx=%2221%22 cy=%2247%22 r=%222.4%22 fill=%22%23d49303%22/%3E%3Ccircle cx=%2243%22 cy=%2247%22 r=%222.4%22 fill=%22%23d49303%22/%3E%3C/svg%3E">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -63,29 +65,109 @@
         .spa-section { display: none; }
         .spa-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* Vlastní scrollování */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #0b0b0b; }
         ::-webkit-scrollbar-thumb { background: #085447; border-radius: 5px; }
         ::-webkit-scrollbar-thumb:hover { background: #d49303; }
+
+        /* ===================== ANIMACE ===================== */
+        body { isolation: isolate; }
+
+        /* Plynule se pohybující barevné záře na pozadí */
+        .bg-glow { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; width: 520px; height: 520px; border-radius: 50%; filter: blur(130px); opacity: .20; will-change: transform; }
+        .blob.b1 { background: #d49303; top: -160px; left: -120px; animation: drift1 26s ease-in-out infinite alternate; }
+        .blob.b2 { background: #085447; bottom: -200px; right: -140px; width: 640px; height: 640px; opacity: .35; animation: drift2 32s ease-in-out infinite alternate; }
+        @keyframes drift1 { to { transform: translate(40vw, 30vh) scale(1.2); } }
+        @keyframes drift2 { to { transform: translate(-38vw, -25vh) scale(1.15); } }
+
+        /* Postupné objevování prvků při rolování */
+        .reveal { opacity: 0; }
+        .reveal.in { opacity: 1; animation: revealUp .7s cubic-bezier(.2,.7,.2,1) var(--d, 0ms) backwards; }
+        @keyframes revealUp {
+            from { opacity: 0; transform: translateY(28px) scale(.98); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* Karty se při najetí zvednou a rozsvítí oranžově */
+        .lift { transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s ease, border-color .3s ease; }
+        .lift:hover { transform: translateY(-5px); border-color: #d49303; box-shadow: 0 18px 36px -16px rgba(212,147,3,.45); }
+        .lift:active { transform: translateY(-2px) scale(.99); }
+
+        /* Odkazy v navigaci: oranžové podtržení, které se rozjede */
+        .nav-btn { position: relative; }
+        .nav-btn::after {
+            content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; border-radius: 2px;
+            background: #d49303; transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.2,.7,.2,1);
+        }
+        .nav-btn:hover::after, .nav-btn.is-active::after { transform: scaleX(1); }
+
+        /* Navigace: vjezd shora a stín při rolování */
+        nav { animation: navIn .7s cubic-bezier(.2,.7,.2,1) backwards; transition: box-shadow .3s ease; }
+        nav.nav-scrolled { box-shadow: 0 12px 34px -10px rgba(212,147,3,.35) !important; }
+        @keyframes navIn { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: none; } }
+
+        /* Mobilní menu */
+        #mobile-menu:not(.hidden) { animation: menuIn .25s ease-out; }
+        @keyframes menuIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+        /* Ikona autobusu v logu: tiše "brumlá" a při najetí popojede */
+        .logo-icon { animation: idle 2.4s ease-in-out infinite; transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+        .logo-btn:hover .logo-icon { animation: none; transform: translateX(4px) rotate(-5deg); }
+        @keyframes idle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+
+        /* Třpytící se oranžový nadpis */
+        .shimmer {
+            background: linear-gradient(90deg, #d49303 0%, #f6c75a 45%, #d49303 90%);
+            background-size: 220% auto; -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent; animation: shimmer 5s linear infinite;
+        }
+        @keyframes shimmer { to { background-position: 220% center; } }
+
+        /* Ukazatel postupu rolování */
+        #scroll-bar {
+            position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60;
+            background: linear-gradient(90deg, #085447, #d49303); transform: scaleX(0); transform-origin: left;
+        }
+
+        /* Šetrné k lidem, kteří mají v systému vypnuté animace */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+            .reveal { opacity: 1; }
+            .blob { display: none; }
+        }
     </style>
 </head>
 <body class="bg-brand-bg text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-yellow selection:text-black">
 
+    <div id="scroll-bar"></div>
+    <div class="bg-glow" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span></div>
+
+    <!-- Ikona autobusu (použitá v logu) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="bus-icon" viewBox="0 0 64 64">
+            <rect x="6" y="10" width="52" height="38" rx="8" fill="#d49303"/>
+            <rect x="12" y="16" width="17" height="13" rx="3" fill="#0b0b0b"/>
+            <rect x="33" y="16" width="19" height="13" rx="3" fill="#0b0b0b"/>
+            <rect x="6" y="35" width="52" height="3" fill="#0b0b0b" opacity=".25"/>
+            <circle cx="20" cy="49" r="7" fill="#0b0b0b"/><circle cx="44" cy="49" r="7" fill="#0b0b0b"/>
+            <circle cx="20" cy="49" r="3" fill="#d49303"/><circle cx="44" cy="49" r="3" fill="#d49303"/>
+        </symbol>
+    </svg>
+
     <!-- Navbar -->
     <div class="px-4 pt-6 pb-2 sticky top-0 z-50">
         <nav class="max-w-6xl mx-auto bg-brand-nav rounded-full px-6 py-3 flex justify-between items-center shadow-lg border border-white/10">
-            <button onclick="navigate('home')" class="font-bold text-lg tracking-tight text-white hover:text-brand-yellow transition-colors">
-                Liberec ve hře Omsi 2
+            <button onclick="navigate('home')" class="logo-btn flex items-center gap-3 font-bold text-lg tracking-tight text-white hover:text-brand-yellow transition-colors">
+                <svg class="logo-icon w-8 h-8 shrink-0" aria-hidden="true"><use href="#bus-icon"/></svg>
+                <span>Liberec ve hře Omsi 2</span>
             </button>
 
             <div class="hidden md:flex gap-8 items-center text-sm font-medium">
-                <button onclick="navigate('home')" class="nav-btn text-white hover:text-brand-yellow transition-colors" data-target="home">Domů</button>
+                <button onclick="navigate('home')" class="nav-btn is-active text-white hover:text-brand-yellow transition-colors" data-target="home">Domů</button>
                 <button onclick="navigate('list-autobusy')" class="nav-btn text-gray-300 hover:text-brand-yellow transition-colors" data-target="list-autobusy">Autobusy</button>
                 <button onclick="navigate('mapa')" class="nav-btn text-gray-300 hover:text-brand-yellow transition-colors" data-target="mapa">Schéma mapy</button>
             </div>
@@ -109,10 +191,10 @@
         <section id="sec-home" class="spa-section active">
 
             <!-- Nadpis -->
-            <header class="text-center mb-12">
+            <header class="reveal text-center mb-12">
                 <p class="text-sm font-bold uppercase tracking-widest text-brand-yellow mb-3">Fanouškovský projekt</p>
                 <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-[1.1]">
-                    Liberec <span class="text-brand-yellow">ve hře</span> Omsi 2
+                    Liberec <span class="shimmer">ve hře</span> Omsi 2
                 </h1>
             </header>
 
@@ -120,7 +202,7 @@
 
                 <!-- AKTUALITY (uprostřed) -->
                 <div>
-                    <div class="flex items-center gap-4 mb-6">
+                    <div class="reveal flex items-center gap-4 mb-6" style="--d:100ms">
                         <h2 class="text-2xl font-black tracking-tight text-white">Aktuality</h2>
                         <div class="h-px flex-1 bg-brand-border"></div>
                     </div>
@@ -128,11 +210,11 @@
                 </div>
 
                 <!-- POPIS PROJEKTU -->
-                <div class="bg-brand-card rounded-3xl p-8 border border-brand-border">
+                <div class="reveal bg-brand-card rounded-3xl p-8 border border-brand-border">
                     <h2 class="text-2xl font-black tracking-tight text-white mb-4">O projektu</h2>
                     <div class="text-gray-400 leading-relaxed flex flex-col gap-4">
                         <p>
-                            Liberec ve hře Omsi 2 je projekt, jehož cílem je přenést do simulátoru
+                            Liberec ve hře Omsi 2 je fanouškovský projekt, jehož cílem je přenést do simulátoru
                             městskou dopravu v Liberci a okolí. Vozový park Dopravního podniku měst Liberce
                             a Jablonce nad Nisou, linky i prostředí se snažím zpracovat co nejvěrněji.
                         </p>
@@ -147,7 +229,7 @@
             <!-- KARTY: Autobusy + Schéma mapy -->
             <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
 
-                <button onclick="navigate('list-autobusy')" class="group text-left bg-brand-green rounded-3xl p-8 border border-white/10 hover:border-brand-yellow transition-colors flex flex-col gap-3">
+                <button onclick="navigate('list-autobusy')" class="reveal lift group text-left bg-brand-green rounded-3xl p-8 border border-white/10 flex flex-col gap-3" style="--d:0ms">
                     <span class="text-xs font-bold uppercase tracking-widest text-brand-yellow">Vozový park</span>
                     <span class="text-3xl font-black text-white">Autobusy</span>
                     <span class="text-sm text-gray-200/80 leading-relaxed">Evidenční čísla, SPZ a polepy všech vozidel.</span>
@@ -157,7 +239,7 @@
                     </span>
                 </button>
 
-                <button onclick="navigate('mapa')" class="group text-left bg-brand-card rounded-3xl p-8 border border-brand-border hover:border-brand-yellow transition-colors flex flex-col gap-3">
+                <button onclick="navigate('mapa')" class="reveal lift group text-left bg-brand-card rounded-3xl p-8 border border-brand-border flex flex-col gap-3" style="--d:120ms">
                     <span class="text-xs font-bold uppercase tracking-widest text-brand-yellow">Trasy a zastávky</span>
                     <span class="text-3xl font-black text-white">Schéma mapy</span>
                     <span class="text-sm text-gray-400 leading-relaxed">Přehled mapy Liberce a okolí ve hře.</span>
@@ -174,7 +256,7 @@
                 <h2 class="text-4xl font-black tracking-tight text-white mb-2">Schéma mapy</h2>
                 <p class="text-gray-400 font-medium">Přehled mapy Liberce ve hře Omsi 2.</p>
             </div>
-            <div class="bg-brand-card rounded-3xl border border-brand-border overflow-hidden">
+            <div class="reveal bg-brand-card rounded-3xl border border-brand-border overflow-hidden">
                 <div class="relative min-h-[300px] bg-brand-bg flex items-center justify-center">
                     <img src="schema-mapy.png" alt="Schéma mapy" class="w-full h-auto"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
@@ -197,7 +279,7 @@
             <div class="flex flex-col gap-6">
                 
                 <!-- Irisbus -->
-                <div class="border border-brand-border rounded-lg overflow-hidden">
+                <div class="reveal lift border border-brand-border rounded-lg overflow-hidden" style="--d:0ms">
                     <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
                         <h3 class="text-xl font-bold text-gray-200">Irisbus</h3>
                     </div>
@@ -210,7 +292,7 @@
                 </div>
 
                 <!-- Iveco -->
-                <div class="border border-brand-border rounded-lg overflow-hidden">
+                <div class="reveal lift border border-brand-border rounded-lg overflow-hidden" style="--d:120ms">
                     <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
                         <h3 class="text-xl font-bold text-gray-200">Iveco</h3>
                     </div>
@@ -224,7 +306,7 @@
                 </div>
 
                 <!-- SOR -->
-                <div class="border border-brand-border rounded-lg overflow-hidden">
+                <div class="reveal lift border border-brand-border rounded-lg overflow-hidden" style="--d:240ms">
                     <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
                         <h3 class="text-xl font-bold text-gray-200">SOR</h3>
                     </div>
@@ -353,6 +435,52 @@
             }
         };
 
+        // --- ANIMACE: pomocné funkce ---
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+            });
+        }, { threshold: 0.12 });
+
+        function observeReveals(root = document) {
+            root.querySelectorAll('.reveal:not(.in)').forEach(el => io.observe(el));
+        }
+
+        function setActiveNav(target) {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const on = btn.dataset.target === target;
+                btn.classList.toggle('text-white', on);
+                btn.classList.toggle('text-gray-300', !on);
+                btn.classList.toggle('is-active', on);
+            });
+        }
+
+        // Přepne sekci, přehraje v ní animace a vyroluje nahoru
+        function activateSection(id) {
+            document.querySelectorAll('.spa-section').forEach(sec => sec.classList.remove('active'));
+            const sec = document.getElementById('sec-' + id);
+            sec.classList.add('active');
+            sec.querySelectorAll('.reveal').forEach(el => { el.classList.remove('in'); io.observe(el); });
+            window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+            if (id === 'home') runCount();
+        }
+
+        // Počet vozidel "dopočítá" od nuly
+        function runCount() {
+            const el = document.getElementById('bus-total');
+            const total = Object.values(db).reduce((sum, m) => sum + m.buses.length, 0);
+            if (reduceMotion) { el.textContent = total; return; }
+            const start = performance.now(), dur = 1200;
+            function tick(now) {
+                const t = Math.min((now - start) / dur, 1);
+                el.textContent = Math.round(total * (1 - Math.pow(1 - t, 3)));
+                if (t < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
         // --- ZÁLOŽNÍ AKTUALITY (použijí se jen, když se nenačte news.json) ---
         const news = [
             { date: '29. 10. 2026', title: 'Spuštění nového webu', text: 'Stránka Liberec ve hře Omsi 2 má nový vzhled. Najdeš na ní přehled autobusů i schéma mapy.' },
@@ -377,14 +505,15 @@
                 list.innerHTML = '<p class="text-gray-500 text-center py-6">Zatím žádné aktuality.</p>';
                 return;
             }
-            list.innerHTML = items.map(n => `
-                <article class="bg-brand-card rounded-2xl p-6 border border-brand-border border-l-4 border-l-brand-yellow">
+            list.innerHTML = items.map((n, i) => `
+                <article class="reveal lift bg-brand-card rounded-2xl p-6 border border-brand-border border-l-4 border-l-brand-yellow" style="--d:${Math.min(i, 8) * 80}ms">
                     <p class="text-xs font-bold uppercase tracking-widest text-brand-yellow mb-2">${escapeHtml(n.date)}</p>
                     <h3 class="text-xl font-bold text-white mb-2">${escapeHtml(n.title)}</h3>
-                    ${n.image && n.image.startsWith('news-img/') ? `<img src="${escapeHtml(n.image)}" alt="" loading="lazy" class="rounded-xl border border-brand-border mb-3 w-full h-auto">` : ''}
+                    ${n.image && n.image.startsWith('news-img/') ? `<img src="${escapeHtml(n.image)}" alt="" loading="lazy" class="rounded-xl border border-brand-border mb-3 w-full h-auto opacity-0 transition-opacity duration-700" onload="this.classList.remove('opacity-0')">` : ''}
                     ${n.text ? `<p class="text-gray-400 leading-relaxed">${formatText(n.text)}</p>` : ''}
                 </article>
             `).join('');
+            observeReveals(list);
         }
 
         // Aktuality se načítají z news.json (plní ho GitHub Action z Discordu).
@@ -400,9 +529,6 @@
         }
 
         loadNews();
-        document.getElementById('bus-total').textContent =
-            Object.values(db).reduce((sum, m) => sum + m.buses.length, 0);
-
         // --- MOBILE MENU LOGIC ---
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -420,29 +546,15 @@
         function navigate(sectionId) {
             mobileMenu.classList.add('hidden');
             mobileMenuBtn.textContent = 'MENU';
-
-            // Zvýraznění aktivního linku v navbaru (podle data-target)
-            const target = sectionId.startsWith('list-') ? sectionId : sectionId;
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                if (btn.dataset.target === target) {
-                    btn.classList.add('text-white');
-                    btn.classList.remove('text-gray-300');
-                } else {
-                    btn.classList.remove('text-white');
-                    btn.classList.add('text-gray-300');
-                }
-            });
-
-            // Přepnutí sekcí
-            document.querySelectorAll('.spa-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById('sec-' + sectionId).classList.add('active');
+            setActiveNav(sectionId);
+            activateSection(sectionId);
         }
 
         // --- RENDER GRID KARET ---
         function showGrid(modelId) {
             // Přepnutí UI do Grid režimu
-            document.querySelectorAll('.spa-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById('sec-grid').classList.add('active');
+            setActiveNav('list-autobusy');
+            activateSection('grid');
 
             const grid = document.getElementById('bus-grid');
             grid.innerHTML = '';
@@ -453,7 +565,7 @@
             document.getElementById('grid-title').textContent = categoryData.title;
             document.getElementById('grid-count').textContent = categoryData.buses.length;
 
-            categoryData.buses.forEach((bus) => {
+            categoryData.buses.forEach((bus, i) => {
                 const imgName = `${bus.evc}_1.png`;
                 const isCVR = bus.paint.includes('CVR');
                 
@@ -465,12 +577,14 @@
                 const badgeText = isCVR ? 'CVR (Celovozová reklama)' : 'Schéma DP Liberec, zeleno-žluto-bílá';
 
                 const card = document.createElement('div');
-                card.className = 'bg-brand-card rounded-2xl overflow-hidden border border-brand-border flex flex-col';
+                card.className = 'reveal lift group bg-brand-card rounded-2xl overflow-hidden border border-brand-border flex flex-col';
+                card.style.setProperty('--d', (Math.min(i, 8) * 60) + 'ms');
                 
                 card.innerHTML = `
                     <div class="h-56 bg-brand-bg relative w-full border-b border-brand-border">
                         <img src="${imgName}" alt="Bus ${bus.evc}" 
-                             class="w-full h-full object-cover"
+                             class="w-full h-full object-cover opacity-0 transition duration-500 group-hover:scale-105"
+                             onload="this.classList.remove('opacity-0')"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                         
                         <div class="absolute inset-0 z-0 hidden flex-col items-center justify-center text-gray-600 bg-brand-bg">
@@ -507,7 +621,24 @@
                 `;
                 grid.appendChild(card);
             });
+            observeReveals(grid);
         }
+
+        // --- START: ukazatel rolování, stín navigace, první animace ---
+        (function init() {
+            const bar = document.getElementById('scroll-bar');
+            const navEl = document.querySelector('nav');
+            function onScroll() {
+                const h = document.documentElement.scrollHeight - window.innerHeight;
+                bar.style.transform = 'scaleX(' + (h > 0 ? window.scrollY / h : 0) + ')';
+                navEl.classList.toggle('nav-scrolled', window.scrollY > 10);
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            onScroll();
+            observeReveals();
+            runCount();
+        })();
     </script>
 </body>
 </html>
