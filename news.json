@@ -1,14 +1,23 @@
 [
   {
-    "id": "ukazka-2",
+    "id": "1565452596796203183",
     "date": "29. 10. 2026",
-    "title": "Spuštění nového webu",
-    "text": "Stránka Liberec ve hře Omsi 2 má nový vzhled. Najdeš na ní přehled autobusů i schéma mapy."
+    "iso": "2026-10-29T19:49:43.779000+00:00",
+    "title": "domáci doma",
+    "text": ""
   },
   {
-    "id": "ukazka-1",
-    "date": "28. 10. 2026",
-    "title": "Pokračují práce na Iveco Urbanway",
-    "text": "Úprava Urbanwayů do libereckého provedení je téměř hotová, dolaďuje se vnitřní informační panel."
+    "id": "1565452477502066699",
+    "date": "29. 10. 2026",
+    "iso": "2026-10-29T19:49:15.337000+00:00",
+    "title": "letecké dny nato",
+    "text": ""
+  },
+  {
+    "id": "1565451203331104861",
+    "date": "29. 10. 2026",
+    "iso": "2026-10-29T19:44:11.551000+00:00",
+    "title": "Ahoj",
+    "text": ""
   }
 ]
