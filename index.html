@@ -316,99 +316,101 @@
         const db = {
             'citelis-12m': {
                 title: 'Irisbus Citelis 12M',
-                status: 'hotovy',
                 buses: [
-                    { evc: '701', spz: '4L5 4824', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '702', spz: '4L5 4825', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '703', spz: '4L5 4826', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '704', spz: '4L5 4827', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '705', spz: '4L5 4828', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '706', spz: '6L5 6239', year: '2013', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                    { evc: '701', spz: '4L5 4824', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '702', spz: '4L5 4825', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '703', spz: '4L5 4826', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '704', spz: '4L5 4827', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '705', spz: '4L5 4828', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '706', spz: '6L5 6239', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
                 ]
             },
             'urbanway-12m': {
                 title: 'Iveco Urbanway 12M',
-                status: 'hotovy',
                 buses: [
-                    { evc: '707', spz: '5L0 4271', year: '2015', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '708', spz: '5L0 4269', year: '2015', paint: 'CVR Môc' },
-                    { evc: '709', spz: '5L0 4270', year: '2015', paint: 'CVR Funpark Babylon' },
-                    { evc: '710', spz: '5L0 4268', year: '2015', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '711', spz: '5L0 4781', year: '2015', paint: 'CVR Rádio Kiss, Beat a Country' },
-                    { evc: '712', spz: '5L0 4780', year: '2015', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '713', spz: '5L0 9564', year: '2016', paint: 'CVR Hitrádio contact' },
-                    { evc: '714', spz: '5L0 9563', year: '2016', paint: 'CVR Foodora' },
-                    { evc: '715', spz: '5L0 9562', year: '2016', paint: 'Pekárna u Papíráku (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '716', spz: '5L0 9561', year: '2016', paint: 'CVR Foodora a Môc' },
-                    { evc: '717', spz: '5L0 9560', year: '2016', paint: 'Rádio Žurnál (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '718', spz: '5L3 1340', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '719', spz: '5L3 1349', year: '2017', paint: 'Kittler Dent (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '720', spz: '6L5 5921', year: '2017', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '721', spz: '5L3 0819', year: '2017', paint: 'ELITE home reality (schema DP Liberec, zeleno-žluto-bílá)' }
+                    { evc: '707', spz: '5L0 4271', year: '2015', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '708', spz: '5L0 4269', year: '2015', status: 'hotový', paint: 'CVR Môc' },
+                    { evc: '709', spz: '5L0 4270', year: '2015', status: 'není', paint: 'CVR Funpark Babylon' },
+                    { evc: '710', spz: '5L0 4268', year: '2015', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '711', spz: '5L0 4781', year: '2015', status: 'hotový', paint: 'CVR Rádio Kiss, Beat a Country' },
+                    { evc: '712', spz: '5L0 4780', year: '2015', status: 'není', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '713', spz: '5L0 9564', year: '2016', status: 'není', paint: 'CVR Hitrádio contact' },
+                    { evc: '714', spz: '5L0 9563', year: '2016', status: 'hotový', paint: 'CVR Foodora' },
+                    { evc: '715', spz: '5L0 9562', year: '2016', status: 'rozpracovaný', paint: 'Pekárna u Papíráku (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '716', spz: '5L0 9561', year: '2016', status: 'hotový', paint: 'CVR Foodora a Môc' },
+                    { evc: '717', spz: '5L0 9560', year: '2016', status: 'rozpracovaný', paint: 'Rádio Žurnál (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '718', spz: '5L3 1340', year: '2017', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '719', spz: '5L3 1349', year: '2017', status: 'rozpracovaný', paint: 'Kittler Dent (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '720', spz: '6L5 5921', year: '2017', status: 'hotový', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '721', spz: '5L3 0819', year: '2017', status: 'hotový', paint: 'ELITE home reality (schema DP Liberec, zeleno-žluto-bílá)' }
                 ]
             },
             'urbanway-12m-cng': {
                 title: 'Iveco Urbanway 12M CNG',
-                status: 'rozpracovany',
                 buses: [
-                    { evc: '528', spz: '7L0 0144', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '529', spz: '5L6 0911', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '530', spz: '5L6 0912', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '531', spz: '5L7 6896', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '532', spz: '5L6 0914', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '533', spz: '5L6 0915', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '534', spz: '5L6 0916', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '535', spz: '5L6 0917', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '536', spz: '5L6 0918', year: '2017', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '537', spz: '5L6 3847', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '538', spz: '5L6 3848', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '539', spz: '5L6 3849', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '540', spz: '5L6 3850', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '541', spz: '5L6 3851', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '542', spz: '5L6 3852', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '543', spz: '5L6 3853', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '544', spz: '5L6 3854', year: '2018', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                    { evc: '528', spz: '7L0 0144', year: '2017', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '529', spz: '5L6 0911', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '530', spz: '5L6 0912', year: '2017', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '531', spz: '5L7 6896', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '532', spz: '5L6 0914', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '533', spz: '5L6 0915', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '534', spz: '5L6 0916', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '535', spz: '5L6 0917', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '536', spz: '5L6 0918', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '537', spz: '5L6 3847', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '538', spz: '5L6 3848', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '539', spz: '5L6 3849', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '540', spz: '5L6 3850', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '541', spz: '5L6 3851', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '542', spz: '5L6 3852', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '543', spz: '5L6 3853', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '544', spz: '5L6 3854', year: '2018', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
                 ]
             },
             'sor-ns-12': {
                 title: 'SOR NS 12',
-                status: 'neni',
                 buses: [
-                    { evc: '722', spz: '6L0 5168', year: '2020', paint: 'CVR Seca CZ - podlahy FeelWood, zeleno-šedá s fotopolepem' },
-                    { evc: '723', spz: '6L0 4346', year: '2020', paint: 'CVR ETK - agentura práce, modrá & CVR Service Plus - chráněná dílna, bílá' },
-                    { evc: '724', spz: '6L0 4768', year: '2020', paint: 'CVR A-net, modro-oranžová' },
-                    { evc: '725', spz: '6L0 4979', year: '2020', paint: 'CVR ZUŠ Liberec, barevná grafika' },
-                    { evc: '726', spz: '6L0 5627', year: '2021', paint: 'CVR Bauhaus, šedo-bílá grafika' },
-                    { evc: '727', spz: '6L0 5628', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '728', spz: '6L0 5629', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '729', spz: '6L0 5630', year: '2021', paint: 'CVR Flector, bílo-modrá grafika' },
-                    { evc: '730', spz: '6L0 5631', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '731', spz: '6L0 5632', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '732', spz: '6L0 5633', year: '2021', paint: 'CVR Condrosulf, bílo-modrá grafika' },
-                    { evc: '733', spz: '6L0 5634', year: '2021', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '734', spz: '6L3 6901', year: '2022', paint: 'CVR Fajn skupina, modro-oranžová' },
-                    { evc: '735', spz: '6L3 6902', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '736', spz: '6L3 6903', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '737', spz: '6L3 6904', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '738', spz: '6L3 6905', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '739', spz: '6L3 6906', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '740', spz: '6L3 6907', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '741', spz: '6L3 6908', year: '2022', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '742', spz: '6L5 6576', year: '2023', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '743', spz: '6L5 6573', year: '2023', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                    { evc: '722', spz: '6L0 5168', year: '2020', status: 'není', paint: 'CVR Seca CZ - podlahy FeelWood, zeleno-šedá s fotopolepem' },
+                    { evc: '723', spz: '6L0 4346', year: '2020', status: 'není', paint: 'CVR ETK - agentura práce, modrá & CVR Service Plus - chráněná dílna, bílá' },
+                    { evc: '724', spz: '6L0 4768', year: '2020', status: 'není', paint: 'CVR A-net, modro-oranžová' },
+                    { evc: '725', spz: '6L0 4979', year: '2020', status: 'není', paint: 'CVR ZUŠ Liberec, barevná grafika' },
+                    { evc: '726', spz: '6L0 5627', year: '2021', status: 'není', paint: 'CVR Bauhaus, šedo-bílá grafika' },
+                    { evc: '727', spz: '6L0 5628', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '728', spz: '6L0 5629', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '729', spz: '6L0 5630', year: '2021', status: 'není', paint: 'CVR Flector, bílo-modrá grafika' },
+                    { evc: '730', spz: '6L0 5631', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '731', spz: '6L0 5632', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '732', spz: '6L0 5633', year: '2021', status: 'není', paint: 'CVR Condrosulf, bílo-modrá grafika' },
+                    { evc: '733', spz: '6L0 5634', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '734', spz: '6L3 6901', year: '2022', status: 'není', paint: 'CVR Fajn skupina, modro-oranžová' },
+                    { evc: '735', spz: '6L3 6902', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '736', spz: '6L3 6903', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '737', spz: '6L3 6904', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '738', spz: '6L3 6905', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '739', spz: '6L3 6906', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '740', spz: '6L3 6907', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '741', spz: '6L3 6908', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '742', spz: '6L5 6576', year: '2023', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '743', spz: '6L5 6573', year: '2023', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
                 ]
             }
         };
 
         // --- STAVY AUTOBUSŮ ---
-        // Stav se nastavuje u celého typu (status: ...). U jednotlivého vozu ho lze přepsat: { evc: '714', ..., status: 'hotovy' }
-        // Možnosti: 'hotovy' | 'rozpracovany' | 'neni'
+        // Stav se píše přímo do řádku každého vozu v databázi výše: status: 'hotový' | 'rozpracovaný' | 'není'
+        // Velikost písmen ani diakritika nehrají roli (stačí i 'Hotovy', 'rozpracován', 'neni').
+        // Když stav chybí nebo mu nerozumím, zobrazí se 'Není'.
         const STATUS = {
-            hotovy:       { label: 'Hotový',       dot: 'bg-emerald-400', text: 'text-emerald-300', ring: 'border-emerald-400/40' },
+            hotovy:       { label: 'Hotový',       dot: 'bg-emerald-400',  text: 'text-emerald-300', ring: 'border-emerald-400/40' },
             rozpracovany: { label: 'Rozpracovaný', dot: 'bg-brand-yellow', text: 'text-brand-yellow', ring: 'border-brand-yellow/50' },
-            neni:         { label: 'Není',         dot: 'bg-gray-500',    text: 'text-gray-300',    ring: 'border-gray-500/40' }
+            neni:         { label: 'Není',         dot: 'bg-red-500',      text: 'text-red-400',      ring: 'border-red-500/50' }
         };
-        const statusOf = (bus, model) => bus.status || model.status || 'neni';
+        function statusOf(bus) {
+            const t = String(bus.status || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+            if (t.startsWith('hotov')) return 'hotovy';
+            if (t.startsWith('rozprac')) return 'rozpracovany';
+            return 'neni';
+        }
 
         // --- ANIMACE: pomocné funkce ---
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -525,7 +527,7 @@
         function renderFilter() {
             const data = db[currentModel];
             const counts = { all: data.buses.length, hotovy: 0, rozpracovany: 0, neni: 0 };
-            data.buses.forEach(b => counts[statusOf(b, data)]++);
+            data.buses.forEach(b => counts[statusOf(b)]++);
 
             const chips = [['all', 'Vše'], ...Object.entries(STATUS).map(([k, v]) => [k, v.label])];
             document.getElementById('grid-filter').innerHTML = chips.map(([key, label]) => {
@@ -547,12 +549,12 @@
             grid.innerHTML = '';
 
             const categoryData = db[currentModel];
-            const list = categoryData.buses.filter(b => currentFilter === 'all' || statusOf(b, categoryData) === currentFilter);
+            const list = categoryData.buses.filter(b => currentFilter === 'all' || statusOf(b) === currentFilter);
 
             list.forEach((bus, i) => {
                 const imgName = `${bus.evc}_1.png`;
                 const isCVR = bus.paint.includes('CVR');
-                const st = STATUS[statusOf(bus, categoryData)];
+                const st = STATUS[statusOf(bus)];
 
                 // Určení barvy štítku na základě nátěru
                 const badgeColorClass = isCVR 
