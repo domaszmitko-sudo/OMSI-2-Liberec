@@ -389,6 +389,21 @@
                     </div>
                 </div>
 
+                <!-- Solaris -->
+                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
+                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                        <h3 class="text-xl font-bold text-ink">Solaris</h3>
+                    </div>
+                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Urbino IV</span>
+                        <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                            <button onclick="showGrid('urbino-12-IV')" class="type-chip">Urbino 12 IV</button>
+                            <button onclick="showGrid('urbino-12-IV-CNG')" class="type-chip">Urbino 12 IV CNG</button>
+                            <button onclick="showGrid('urbino-18-IV-CNG')" class="type-chip">Urbino 18 IV CNG</button>                            
+                        </div>
+                    </div>
+                </div>
+
                 <!-- SOR -->
                 <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:240ms">
                     <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
@@ -401,7 +416,19 @@
                         </div>
                     </div>
                 </div>
-
+                
+                <!-- Karosa -->
+                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
+                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                        <h3 class="text-xl font-bold text-ink">Karosa</h3>
+                    </div>
+                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">B 931</span>
+                        <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                            <button onclick="showGrid('urbino-12-IV')" class="type-chip">B 931E.1703</button>                    
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -555,6 +582,20 @@
                     { evc: '544', spz: '5L6 3854', year: '2018', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
                 ]
             },
+            'urbino-12-IV-CNG': {
+                title: 'Solaris Urbino 12 IV CNG',
+                description: 'Úprava obsahuje kompletní předělání Urbina do podoby u DPMLJ, jako napčíklad nálepky v interiéru, vybavení a velmi věrné repainty a originální textury pro daný autobus.', // ← sem napiš popis tohoto typu
+                buses: [
+                    { evc: '545', spz: '2BD 4401', year: '2016', status: 'hotový', link: 'https://seznam-autobusu.cz/vuz/63525', paint: 'MHD Znojmo, červená' }
+                ]
+            },
+            'urbino-12-IV': {
+                title: 'Solaris Urbino 12 IV CNG',
+                description: 'Úprava obsahuje kompletní předělání Urbina do podoby u DPMLJ, jako napčíklad nálepky v interiéru, vybavení a velmi věrné repainty a originální textury pro daný autobus.', // ← sem napiš popis tohoto typu
+                buses: [
+                    { evc: '310', spz: '1BN 7900', year: '2016', status: 'hotový', link: 'https://seznam-autobusu.cz/vuz/66918', paint: 'MHD Znojmo, červená' }
+                ]
+            },
             'sor-ns-12': {
                 title: 'SOR NS 12',
                 description: 'Úprava obsahuje bla bla bla.', // ← sem napiš popis tohoto typu
@@ -581,6 +622,13 @@
                     { evc: '741', spz: '6L3 6908', year: '2022', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
                     { evc: '742', spz: '6L5 6576', year: '2023', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
                     { evc: '743', spz: '6L5 6573', year: '2023', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                ]
+             },
+            'karosa-b931e': {
+                title: 'Karosa B 931E.1703',
+                description: 'Úprava obsahuje bla bla bla.', // ← sem napiš popis tohoto typu
+                buses: [
+                    { evc: '383', spz: 'LIB 39-28', year: '1999', status: 'rozpracovaný', link: 'https://seznam-autobusu.cz/vuz/18676', paint: 'CVR Librax, bílá s grafikou' }
                 ]
             }
         };
