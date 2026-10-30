@@ -289,7 +289,7 @@
             <div class="border-b border-brand-border pb-6 mb-8 flex flex-col sm:flex-row justify-between items-end gap-4">
                 <div>
                     <h2 id="grid-title" class="text-4xl font-black tracking-tight text-white mb-2">...</h2>
-                    <p id="grid-subtitle" class="text-gray-400 font-medium">Evidence vozů</p>
+                    <p id="grid-subtitle" class="text-gray-400 font-medium leading-relaxed max-w-2xl">Evidence vozů</p>
                 </div>
                 <div class="bg-brand-card text-brand-yellow font-bold px-5 py-2.5 rounded-full text-sm border border-brand-border">
                     Celkem vozů: <span id="grid-count">0</span>
@@ -316,6 +316,7 @@
         const db = {
             'citelis-12m': {
                 title: 'Irisbus Citelis 12M',
+                description: 'Úprava obsahuje kompletní předělání Citelise do podoby u DPMLJ, jako napčíklad nálepky v interiéru, vybavení a velmi věrné repainty.', // ← sem napiš popis tohoto typu
                 buses: [
                     { evc: '701', spz: '4L5 4824', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
                     { evc: '702', spz: '4L5 4825', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
@@ -327,6 +328,7 @@
             },
             'urbanway-12m': {
                 title: 'Iveco Urbanway 12M',
+                description: 'Úprava obsahuje kompletní předělání Urbanwaye do podoby u DPMLJ, jako napčíklad nálepky v interiéru, vybavení a velmi věrné repainty a originální textury pro daný autobus.', // ← sem napiš popis tohoto typu
                 buses: [
                     { evc: '707', spz: '5L0 4271', year: '2015', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
                     { evc: '708', spz: '5L0 4269', year: '2015', status: 'hotový', paint: 'CVR Môc' },
@@ -347,6 +349,7 @@
             },
             'urbanway-12m-cng': {
                 title: 'Iveco Urbanway 12M CNG',
+                description: 'Úprava která obsahuje repainty se dá získat zde: https://discord.gg/t4UJRTarBq na serveru Linky 400 (Autorem je P3ta) .', // ← sem napiš popis tohoto typu
                 buses: [
                     { evc: '528', spz: '7L0 0144', year: '2017', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
                     { evc: '529', spz: '5L6 0911', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
@@ -369,6 +372,7 @@
             },
             'sor-ns-12': {
                 title: 'SOR NS 12',
+                description: 'Úprava obsahuje bla bla bla.', // ← sem napiš popis tohoto typu
                 buses: [
                     { evc: '722', spz: '6L0 5168', year: '2020', status: 'není', paint: 'CVR Seca CZ - podlahy FeelWood, zeleno-šedá s fotopolepem' },
                     { evc: '723', spz: '6L0 4346', year: '2020', status: 'není', paint: 'CVR ETK - agentura práce, modrá & CVR Service Plus - chráněná dílna, bílá' },
@@ -513,6 +517,7 @@
 
             const categoryData = db[modelId];
             document.getElementById('grid-title').textContent = categoryData.title;
+            document.getElementById('grid-subtitle').textContent = categoryData.description || 'Evidence vozů';
             document.getElementById('grid-count').textContent = categoryData.buses.length;
             renderFilter();
             renderGrid();
