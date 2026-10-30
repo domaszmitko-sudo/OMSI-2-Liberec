@@ -438,7 +438,7 @@
         <div id="modal-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="relative h-full overflow-y-auto flex items-start sm:items-center justify-center p-3 sm:p-6 pointer-events-none">
             <div id="modal-card" class="pointer-events-auto relative w-full max-w-4xl bg-brand-card border border-brand-border rounded-3xl overflow-hidden shadow-2xl">
-                <div id="modal-photo" class="relative h-[42vh] sm:h-[52vh] bg-black border-b border-brand-border">
+                <div id="modal-photo" class="relative overflow-hidden h-[42vh] sm:h-[52vh] bg-black border-b border-brand-border">
                     <img id="modal-img" class="w-full h-full object-contain" alt="">
                     <div id="modal-nophoto" class="absolute inset-0 hidden flex-col items-center justify-center text-faint">
                         <span class="text-sm font-bold uppercase tracking-widest">Fotografie chybí</span>
@@ -970,12 +970,52 @@
 
         function stepModal(dir) {
             if (visibleList.length < 2) return;
+            const canAnimate = !reduceMotion && modalImg.animate;
+
+            // Stará fotka: zkopírujeme ji do vrstvy navíc, která odjede pryč
+            let ghost = null;
+            if (canAnimate && modalImg.style.display !== 'none' && modalImg.complete && modalImg.naturalWidth) {
+                ghost = modalImg.cloneNode();
+                ghost.removeAttribute('id');
+                ghost.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:1;';
+                modalPhoto.insertBefore(ghost, modalImg.nextSibling);
+            }
+
+            modalImg.getAnimations().forEach(a => a.cancel());
             modalIndex = (modalIndex + dir + visibleList.length) % visibleList.length;
             renderModal();
-            if (!reduceMotion && modalImg.animate) {
-                modalImg.animate([{ opacity: 0, transform: `translateX(${dir * 36}px)` }, { opacity: 1, transform: 'none' }],
-                                 { duration: 320, easing: 'ease-out' });
+            if (!canAnimate) return;
+
+            const ease = 'cubic-bezier(.2,.7,.2,1)';
+
+            if (ghost) {
+                const out = ghost.animate(
+                    [{ opacity: 1, transform: 'none', filter: 'blur(0)' },
+                     { opacity: 0, transform: `translateX(${-dir * 18}%) scale(.94)`, filter: 'blur(6px)' }],
+                    { duration: 380, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' });
+                out.onfinish = out.oncancel = () => ghost.remove();
             }
+
+            // Nová fotka: přijede z druhé strany, mírně se zaostří
+            modalImg.animate(
+                [{ opacity: 0, transform: `translateX(${dir * 18}%) scale(1.06)`, filter: 'blur(8px)' },
+                 { opacity: 1, transform: 'none', filter: 'blur(0)' }],
+                { duration: 520, easing: ease });
+
+            // Čítač „odskočí“
+            document.getElementById('modal-counter').animate(
+                [{ transform: 'scale(1.35)' }, { transform: 'scale(1)' }],
+                { duration: 380, easing: 'cubic-bezier(.3,1.6,.5,1)' });
+
+            // Stav + texty vjedou postupně (stagger)
+            const parts = ['modal-status', 'modal-evc', 'modal-type', 'modal-spz', 'modal-badge', 'modal-paint', 'modal-note']
+                .map(id => document.getElementById(id))
+                .filter(el => el && !el.classList.contains('hidden'));
+            parts.forEach((el, i) => {
+                el.animate(
+                    [{ opacity: 0, transform: `translateX(${dir * 22}px)` }, { opacity: 1, transform: 'none' }],
+                    { duration: 420, delay: 70 + i * 45, easing: ease, fill: 'backwards' });
+            });
         }
 
         document.getElementById('bus-grid').addEventListener('click', e => {
