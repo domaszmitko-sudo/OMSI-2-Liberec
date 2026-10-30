@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liberec ve hře Omsi 2</title>
-    <meta name="theme-color" content="#0b0b0b">
+    <meta name="theme-color" content="#0b0b0c">
     <link rel="icon" type="image/png" href="Ikona.png">
+    <!-- Motiv (tmavý / světlý) se nastaví hned, aby web neblikal -->
+    <script>try { document.documentElement.dataset.theme = localStorage.getItem('theme') || 'dark'; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     
     <!-- Google Fonts: Inter pro běžný text -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:ital,wght@1,600&display=swap" rel="stylesheet">
 
     <!-- Tailwind Config -->
     <script>
@@ -25,15 +27,16 @@
                         spz: ['CZSPZ', 'sans-serif'], // Tvůj font pro SPZ
                     },
                     colors: {
+                        ink: 'var(--ink)', muted: 'var(--muted)', faint: 'var(--faint)',
                         brand: {
-                            bg: '#0b0b0b',       // Černé pozadí (černý režim)
+                            bg: 'var(--bg)',
                             nav: '#085447',      // Zelená navigace
                             yellow: '#d49303',   // Oranžový akcent (název třídy ponechán kvůli kompatibilitě)
                             green: '#085447',    // Zelená
-                            card: '#161616',     // Pozadí karet
-                            border: '#2a2a2a',
-                            grayHeader: '#1f1f1f',// Šedá hlavička pro tabulku značek
-                            rowGreen: '#0a2e29'   // Tmavě zelené pozadí pro řádky v seznamu
+                            card: 'var(--surface)',
+                            border: 'var(--border)',
+                            grayHeader: 'var(--surface2)',
+                            rowGreen: 'var(--rowtint)'
                         }
                     }
                 }
@@ -58,7 +61,7 @@
             font-style: normal;
         }
 
-        html { color-scheme: dark; background: #0b0b0b; }
+        html { background: var(--bg); }
 
         /* SPA Skrývání obsahu */
         .spa-section { display: none; }
@@ -68,9 +71,9 @@
 
         /* Vlastní scrollování */
         ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #0b0b0b; }
-        ::-webkit-scrollbar-thumb { background: #085447; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #d49303; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--thumb); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--faint); }
 
         /* ===================== ANIMACE ===================== */
         body { isolation: isolate; }
@@ -78,22 +81,16 @@
         /* Pozadí: fotka pozadi.png zakrytá černošedým překryvem.
            Průhlednost překryvu se mění v --tint (0 = fotka plně vidět, 1 = čistě černošedá). */
         .bg-photo {
-            --tint: .86;
-            position: fixed; inset: 0; z-index: -2; pointer-events: none;
-            background-color: #121212;
+            --tint: var(--ptint);
+            position: fixed; inset: -80px 0; z-index: -2; pointer-events: none;
+            transform: translate3d(0, calc(var(--p, 0) * -80px), 0); will-change: transform;
+            background-color: var(--bg);
             background-image:
-                linear-gradient(rgba(14,14,14,var(--tint)), rgba(14,14,14,var(--tint))),
+                linear-gradient(rgba(var(--bgrgb),var(--tint)), rgba(var(--bgrgb),var(--tint))),
                 url('pozadi.png');
             background-size: cover; background-position: center; background-repeat: no-repeat;
         }
 
-        /* Plynule se pohybující barevné záře na pozadí */
-        .bg-glow { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-        .blob { position: absolute; width: 520px; height: 520px; border-radius: 50%; filter: blur(130px); opacity: .12; will-change: transform; }
-        .blob.b1 { background: #d49303; top: -160px; left: -120px; animation: drift1 26s ease-in-out infinite alternate; }
-        .blob.b2 { background: #085447; bottom: -200px; right: -140px; width: 640px; height: 640px; opacity: .22; animation: drift2 32s ease-in-out infinite alternate; }
-        @keyframes drift1 { to { transform: translate(40vw, 30vh) scale(1.2); } }
-        @keyframes drift2 { to { transform: translate(-38vw, -25vh) scale(1.15); } }
 
         /* Postupné objevování prvků při rolování */
         .reveal { opacity: 0; }
@@ -108,33 +105,170 @@
         .lift:hover { transform: translateY(-5px); border-color: #d49303; box-shadow: 0 18px 36px -16px rgba(212,147,3,.45); }
         .lift:active { transform: translateY(-2px) scale(.99); }
 
-        /* Třpytící se oranžový nadpis */
-        .shimmer {
-            background: linear-gradient(90deg, #d49303 0%, #f6c75a 45%, #d49303 90%);
-            background-size: 220% auto; -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent; color: transparent; animation: shimmer 5s linear infinite;
-        }
-        @keyframes shimmer { to { background-position: 220% center; } }
 
-        /* Ukazatel postupu rolování */
-        #scroll-bar {
-            position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60;
-            background: linear-gradient(90deg, #085447, #d49303); transform: scaleX(0); transform-origin: left;
-        }
 
         /* Šetrné k lidem, kteří mají v systému vypnuté animace */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
             .reveal { opacity: 1; }
-            .blob { display: none; }
         }
+
+        /* ===================== DETAIL, PŘECHODY, ÚVOD, ČASOVÁ OSA ===================== */
+        html { scrollbar-gutter: stable; }
+
+        /* Plynulé přechody mezi stránkami (View Transitions); kde nejsou podporovány, zůstává obyčejný fade */
+        .vt .spa-section.active { animation: none; }
+        ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .32s; }
+        ::view-transition-group(bus-hero) { animation-duration: .5s; animation-timing-function: cubic-bezier(.2,.7,.2,1); }
+
+
+        /* Zvýraznění karty po otevření odkazu na vůz */
+        .lift.flash { border-color: #d49303; box-shadow: 0 0 0 3px #d49303, 0 0 46px rgba(212,147,3,.55); }
+
+        /* Úvodní obrazovka */
+        html.intro-active, html.intro-active body { overflow: hidden; }
+        html.intro-active .reveal.in { animation-play-state: paused; }
+        #intro {
+            position: fixed; inset: 0; z-index: 200; background: #050505; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity .6s ease, visibility .6s;
+        }
+        #intro.hide { opacity: 0; visibility: hidden; }
+        .intro-title {
+            font-weight: 900; font-size: clamp(2rem, 7vw, 4.5rem); letter-spacing: -.02em; line-height: 1.1;
+            color: #fff; text-align: center; padding: 0 1rem; margin-bottom: 3rem; opacity: 0;
+            animation: introTitle 1s cubic-bezier(.2,.7,.2,1) .9s forwards;
+        }
+        @keyframes introTitle {
+            from { opacity: 0; transform: translateY(14px); filter: blur(8px); }
+            to   { opacity: 1; transform: none; filter: none; text-shadow: 0 0 36px rgba(212,147,3,.5); }
+        }
+        .intro-road {
+            position: absolute; left: 0; right: 0; top: calc(50% + 8rem); height: 2px; transform: scaleX(0);
+            background: linear-gradient(90deg, transparent, #d49303 20%, #d49303 80%, transparent);
+            animation: roadIn .6s ease-out .1s forwards;
+        }
+        @keyframes roadIn { to { transform: scaleX(1); } }
+        .intro-bus {
+            position: absolute; left: 0; top: calc(50% + 8rem - 98px); width: 112px; height: 112px;
+            transform: translateX(-140px); animation: busDrive 1.5s cubic-bezier(.5,.05,.3,1) .35s forwards;
+        }
+        @keyframes busDrive { to { transform: translateX(calc(100vw + 140px)); } }
+        .intro-bus .wheel { transform-box: fill-box; transform-origin: center; animation: spin .45s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .intro-skip {
+            position: absolute; bottom: 2rem; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+            color: #555; opacity: 0; animation: fadeIn .6s ease 1.2s forwards;
+        }
+
+
+        /* ===================== MOTIV A STYL ===================== */
+        :root {
+            --bg: #0b0b0c; --surface: #141416; --surface2: #1b1b1e; --rowtint: rgba(8,84,71,.16);
+            --border: rgba(255,255,255,.09); --ink: #f4f4f2; --muted: #a0a0a8; --faint: #6e6e76; --thumb: #3a3a3f;
+            --chip: rgba(255,255,255,.05); --chip-hover: rgba(255,255,255,.1);
+            --bgrgb: 11,11,12; --ptint: .9; --shadow: 0 18px 40px -22px rgba(0,0,0,.9); color-scheme: dark;
+        }
+        html[data-theme="light"] {
+            --bg: #f4f4f1; --surface: #ffffff; --surface2: #ecece8; --rowtint: rgba(8,84,71,.07);
+            --border: rgba(0,0,0,.1); --ink: #121214; --muted: #5b5b63; --faint: #8c8c94; --thumb: #c4c4c9;
+            --chip: rgba(0,0,0,.04); --chip-hover: rgba(0,0,0,.08);
+            --bgrgb: 244,244,241; --ptint: .94; --shadow: 0 18px 40px -24px rgba(0,0,0,.35); color-scheme: light;
+        }
+        html.theming, html.theming *, html.theming *::before, html.theming *::after { transition: background-color .3s, color .3s, border-color .3s !important; }
+        body { overflow-x: hidden; }
+
+        /* Karty */
+        .lift { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+        .lift:hover { transform: translateY(-3px); border-color: var(--faint); box-shadow: var(--shadow); }
+        .lift:active { transform: translateY(-1px); }
+        .lift.flash { border-color: #d49303; box-shadow: 0 0 0 2px #d49303; }
+
+        /* Typografie */
+        .hero-title, .page-title { font-weight: 800; letter-spacing: -0.045em; line-height: 1.02; }
+        .page-title { font-size: clamp(2.25rem, 5.5vw, 3.75rem); color: var(--ink); letter-spacing: -0.04em; line-height: 1.05; }
+        .accent { font-family: 'Source Serif 4', Georgia, serif; font-style: italic; font-weight: 600; letter-spacing: -0.02em; color: #d49303; }
+        .label { font-size: .72rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); }
+
+        /* Úvod: zelený pás s vroubkovaným okrajem */
+        .hero { position: relative; left: 50%; width: 100vw; margin-left: -50vw; background: #085447; color: #fff; text-align: center; }
+        .hero::after {
+            content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 22px;
+            background: radial-gradient(circle at 22px 0, #085447 21.5px, transparent 22px) 0 0 / 44px 22px repeat-x;
+        }
+        .hero-title { color: #fff; }
+        .hero-sub { color: rgba(255,255,255,.78); }
+
+        /* Tlačítka */
+        .pill-primary {
+            display: inline-flex; align-items: center; gap: .5rem; padding: .85rem 1.7rem; border-radius: 999px;
+            background: #d49303; color: #15110a; font-weight: 700; font-size: 1rem;
+            transition: transform .2s ease, background .2s ease;
+        }
+        .pill-primary:hover { background: #e3a11a; transform: translateY(-2px); }
+        .pill-primary.hidden { display: none; }
+        .pill-btn, .type-chip {
+            display: inline-flex; align-items: center; gap: .5rem; border-radius: 999px; font-weight: 500;
+            border: 1px solid var(--border); background: var(--chip); color: var(--muted);
+            transition: background .25s, color .25s, border-color .25s;
+        }
+        .pill-btn { padding: .5rem 1rem; font-size: .85rem; margin-bottom: 2rem; }
+        .type-chip { padding: .4rem .95rem; font-size: .9rem; color: var(--ink); }
+        .pill-btn:hover, .type-chip:hover { background: var(--chip-hover); color: var(--ink); border-color: var(--faint); }
+        .chip-off { background: var(--chip); color: var(--muted); border-color: var(--border); }
+        .chip-off:hover { background: var(--chip-hover); color: var(--ink); }
+
+        /* Karty na úvodní stránce */
+        .home-card {
+            display: flex; flex-direction: column; gap: .75rem; min-height: 230px; padding: 2rem;
+            border-radius: 28px; border: 1px solid var(--border); background: var(--surface); color: var(--ink);
+        }
+        .home-card.card-green { background: #085447; border-color: transparent; color: #fff; }
+        .card-title { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.035em; line-height: 1.1; }
+        .card-text { font-size: .92rem; line-height: 1.55; color: var(--muted); }
+        .card-green .card-text { color: rgba(255,255,255,.78); }
+        .chev { width: 26px; height: 26px; flex-shrink: 0; color: #d49303; transition: transform .25s ease; }
+        .card-green .chev { color: #fff; }
+        .home-card:hover .chev { transform: translateX(4px); }
+
+        /* Přepínač motivu (vpravo dole) */
+        #theme-toggle {
+            position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 70;
+            width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: var(--surface); color: var(--ink); border: 1px solid var(--border); box-shadow: var(--shadow);
+            transition: transform .2s ease, border-color .2s ease;
+        }
+        #theme-toggle:hover { transform: scale(1.07); border-color: var(--faint); }
+        html[data-theme="dark"] .ico-moon, html[data-theme="light"] .ico-sun { display: none; }
+
+        /* Světlý motiv: barvy štítků na světlém podkladu */
+        html[data-theme="light"] .bg-purple-900\/40 { background: rgba(126,34,206,.1); }
+        html[data-theme="light"] .text-purple-300 { color: #6b21a8; }
+        html[data-theme="light"] .border-purple-700\/50 { border-color: rgba(126,34,206,.3); }
+        html[data-theme="light"] .bg-green-900\/40 { background: rgba(8,84,71,.1); }
+        html[data-theme="light"] .text-green-300 { color: #085447; }
+        html[data-theme="light"] .border-green-700\/50 { border-color: rgba(8,84,71,.35); }
     </style>
 </head>
-<body class="bg-brand-bg text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-yellow selection:text-black">
+<body class="bg-brand-bg text-ink font-sans min-h-screen flex flex-col antialiased selection:bg-brand-yellow selection:text-black">
 
-    <div id="scroll-bar"></div>
-    <div class="bg-photo" aria-hidden="true"></div>
-    <div class="bg-glow" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span></div>
+
+    <!-- Úvodní obrazovka (jednou za návštěvu) -->
+    <div id="intro" aria-hidden="true">
+        <p class="intro-title">Liberec <span class="accent">ve hře</span> Omsi 2</p>
+        <div class="intro-road"></div>
+        <svg class="intro-bus" viewBox="0 0 64 64">
+            <rect x="6" y="10" width="52" height="38" rx="8" fill="#d49303"/>
+            <rect x="12" y="16" width="17" height="13" rx="3" fill="#0b0b0b"/>
+            <rect x="33" y="16" width="19" height="13" rx="3" fill="#0b0b0b"/>
+            <rect x="6" y="35" width="52" height="3" fill="#0b0b0b" opacity=".25"/>
+            <g class="wheel"><circle cx="20" cy="49" r="7" fill="#0b0b0b"/><rect x="19" y="43" width="2" height="12" fill="#d49303"/><rect x="14" y="48" width="12" height="2" fill="#d49303"/></g>
+            <g class="wheel"><circle cx="44" cy="49" r="7" fill="#0b0b0b"/><rect x="43" y="43" width="2" height="12" fill="#d49303"/><rect x="38" y="48" width="12" height="2" fill="#d49303"/></g>
+        </svg>
+        <p class="intro-skip">Klikni pro přeskočení</p>
+    </div>
+
+        <div class="bg-photo" aria-hidden="true"></div>
 
     <!-- Main Content -->
     <main class="flex-1 w-full max-w-6xl mx-auto px-4 pt-12 pb-8 md:pt-16 md:pb-12">
@@ -142,12 +276,13 @@
         <!-- SECTION: HOME -->
         <section id="sec-home" class="spa-section active">
 
-            <!-- Nadpis -->
-            <header class="reveal text-center mb-12">
-                <p class="text-sm font-bold uppercase tracking-widest text-brand-yellow mb-3">Fanouškovský projekt</p>
-                <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-[1.1]">
-                    Liberec <span class="shimmer">ve hře</span> Omsi 2
-                </h1>
+            <!-- Úvod -->
+            <header class="hero -mt-12 md:-mt-16 mb-20">
+                <div class="max-w-3xl mx-auto px-4 pt-24 pb-28 md:pt-32 md:pb-36">
+                    <h1 class="hero-title text-5xl md:text-7xl">Liberec <span class="accent">ve hře</span> Omsi 2</h1>
+                    <p class="hero-sub mt-6 text-lg md:text-xl max-w-xl mx-auto leading-relaxed">Fanouškovský projekt: autobusy a mapa Liberce do simulátoru.</p>
+                    <button onclick="navigate('list-autobusy')" class="pill-primary mt-10">Zobrazit autobusy</button>
+                </div>
             </header>
 
             <div class="max-w-3xl mx-auto flex flex-col gap-12">
@@ -155,7 +290,7 @@
                 <!-- AKTUALITY (uprostřed) -->
                 <div>
                     <div class="reveal flex items-center gap-4 mb-6" style="--d:100ms">
-                        <h2 class="text-2xl font-black tracking-tight text-white">Aktuality</h2>
+                        <h2 class="label">Aktuality</h2>
                         <div class="h-px flex-1 bg-brand-border"></div>
                     </div>
                     <div id="news-list" class="flex flex-col gap-4"></div>
@@ -163,8 +298,8 @@
 
                 <!-- POPIS PROJEKTU -->
                 <div class="reveal bg-brand-card rounded-3xl p-8 border border-brand-border">
-                    <h2 class="text-2xl font-black tracking-tight text-white mb-4">O projektu</h2>
-                    <div class="text-gray-400 leading-relaxed flex flex-col gap-4">
+                    <h2 class="text-xl font-semibold tracking-tight text-ink mb-4">O projektu</h2>
+                    <div class="text-muted leading-relaxed flex flex-col gap-4">
                         <p>
                             Ahoj, já jsem Dominik a jsem z Liberce. Omsi 2 hraji už pár let a dost mi vadilo, že
                             moje rodné město do hry není, tak jsem se rozhodl že si svoje přání začnu plnit a začal jsem začátekm roku 2026 stavět linku 46 z Ostašova do Karlova abych se něco naučil a později mapu rozšířil do centra. 
@@ -179,43 +314,33 @@
             </div>
 
             <!-- KARTY: Autobusy + Schéma mapy -->
-            <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
-
-                <button onclick="navigate('list-autobusy')" class="reveal lift group text-left bg-brand-green rounded-3xl p-8 border border-white/10 flex flex-col gap-3" style="--d:0ms">
-                    <span class="text-xs font-bold uppercase tracking-widest text-brand-yellow">Vozový park</span>
-                    <span class="text-3xl font-black text-white">Autobusy</span>
-                    <span class="text-sm text-gray-200/80 leading-relaxed">Seznam vozidel/repaintů do Omsi 2.</span>
-                    <span class="mt-4 flex items-end justify-between">
-                        <span><span id="bus-total" class="font-europa text-5xl text-white">0</span> <span class="text-sm text-gray-200/80">vozidel</span></span>
-                        <span class="text-brand-yellow font-bold group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </span>
+            <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 mt-12">
+                <button onclick="navigate('list-autobusy')" class="reveal lift group home-card card-green text-left" style="--d:0ms">
+                    <span class="flex items-center justify-between gap-4"><span class="card-title">Autobusy</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
+                    <span class="card-text">Seznam vozidel/repaintů do Omsi 2.</span>
+                    <span class="mt-auto pt-6"><span id="bus-total" class="font-europa text-5xl">0</span> <span class="card-text">vozidel</span></span>
                 </button>
-
-                <button onclick="navigate('mapa')" class="reveal lift group text-left bg-brand-card rounded-3xl p-8 border border-brand-border flex flex-col gap-3" style="--d:120ms">
-                    <span class="text-xs font-bold uppercase tracking-widest text-brand-yellow">Schéma</span>
-                    <span class="text-3xl font-black text-white">Přehled mapy ve hře</span>
-                    <span class="text-sm text-gray-400 leading-relaxed">Najdeš zde mapu linek na mapě a jejich aktuální stav.</span>
-                    <span class="mt-4 flex items-end justify-end">
-                        <span class="text-brand-yellow font-bold group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </span>
+                <button onclick="navigate('mapa')" class="reveal lift group home-card text-left" style="--d:120ms">
+                    <span class="flex items-center justify-between gap-4"><span class="card-title">Přehled mapy ve hře</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
+                    <span class="card-text">Najdeš zde mapu linek na mapě a jejich aktuální stav.</span>
                 </button>
             </div>
         </section>
 
         <!-- SECTION: SCHÉMA MAPY -->
         <section id="sec-mapa" class="spa-section">
-            <button onclick="navigate('home')" class="text-brand-yellow hover:text-white text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 transition-colors">
+            <button onclick="navigate('home')" class="pill-btn">
                 &larr; Zpět domů
             </button>
             <div class="mb-8">
-                <h2 class="text-4xl font-black tracking-tight text-white mb-2">Schéma mapy</h2>
-                <p class="text-gray-400 font-medium">Přehled mapy Liberce ve hře Omsi 2.</p>
+                <h2 class="page-title mb-3">Schéma mapy</h2>
+                <p class="text-muted font-medium">Přehled mapy Liberce ve hře Omsi 2.</p>
             </div>
             <div class="reveal bg-brand-card rounded-3xl border border-brand-border overflow-hidden">
                 <div class="relative min-h-[300px] bg-brand-bg flex items-center justify-center">
                     <img src="schema-mapy.png" alt="Schéma mapy" class="w-full h-auto"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                    <div class="hidden flex-col items-center justify-center text-gray-600 p-10 text-center">
+                    <div class="hidden flex-col items-center justify-center text-faint p-10 text-center">
                         <span class="text-sm font-bold uppercase tracking-widest mb-2">Schéma mapy chybí</span>
                         <span class="text-xs">Nahraj obrázek jako <code class="text-brand-yellow">schema-mapy.png</code> vedle index.html</span>
                     </div>
@@ -225,59 +350,59 @@
 
         <!-- SECTION: SEZNAM AUTOBUSŮ (Kategorie / Tabulka) -->
         <section id="sec-list-autobusy" class="spa-section">
-            <button onclick="navigate('home')" class="text-brand-yellow hover:text-white text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 transition-colors">
+            <button onclick="navigate('home')" class="pill-btn">
                 &larr; Zpět domů
             </button>
             <div class="mb-8">
-                <h2 class="text-4xl font-black tracking-tight text-white mb-2">Autobusy</h2>
-                <p class="text-gray-400 font-medium">Přehled značek a typů ve vozovém parku.</p>
+                <h2 class="page-title mb-3">Autobusy</h2>
+                <p class="text-muted font-medium">Přehled značek a typů ve vozovém parku.</p>
             </div>
 
             <!-- Tabulka Značek (Inspirováno fotkou č. 4) -->
             <div class="flex flex-col gap-6">
                 
                 <!-- Irisbus -->
-                <div class="reveal lift border border-brand-border rounded-lg overflow-hidden" style="--d:0ms">
+                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:0ms">
                     <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
-                        <h3 class="text-xl font-bold text-gray-200">Irisbus</h3>
+                        <h3 class="text-xl font-bold text-ink">Irisbus</h3>
                     </div>
                     <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-gray-100 min-w-[120px] uppercase tracking-wide text-sm">Citelis</span>
+                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Citelis</span>
                         <div class="flex flex-wrap gap-4">
-                            <button onclick="showGrid('citelis-12m')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">Citelis 12M</button>
+                            <button onclick="showGrid('citelis-12m')" class="type-chip">Citelis 12M</button>
                         </div>
                         </div>
                     <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-gray-100 min-w-[120px] uppercase tracking-wide text-sm">Citybus</span>
+                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Citybus</span>
                         <div class="flex flex-wrap gap-4">
-                            <button onclick="showGrid('citybus-18m-2081.30')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">Citybus 18M 2081.30</button>
+                            <button onclick="showGrid('citybus-18m-2081.30')" class="type-chip">Citybus 18M 2081.30</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Iveco -->
-                <div class="reveal lift border border-brand-border rounded-lg overflow-hidden" style="--d:120ms">
+                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
                     <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
-                        <h3 class="text-xl font-bold text-gray-200">Iveco</h3>
+                        <h3 class="text-xl font-bold text-ink">Iveco</h3>
                     </div>
                     <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-gray-100 min-w-[120px] uppercase tracking-wide text-sm">Urbanway</span>
+                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Urbanway</span>
                         <div class="flex flex-wrap gap-4 text-sm sm:text-base">
-                            <button onclick="showGrid('urbanway-12m')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">Urbanway 12M</button>
-                            <button onclick="showGrid('urbanway-12m-cng')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">Urbanway 12M CNG</button>
+                            <button onclick="showGrid('urbanway-12m')" class="type-chip">Urbanway 12M</button>
+                            <button onclick="showGrid('urbanway-12m-cng')" class="type-chip">Urbanway 12M CNG</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- SOR -->
-                <div class="reveal lift border border-brand-border rounded-lg overflow-hidden" style="--d:240ms">
+                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:240ms">
                     <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
-                        <h3 class="text-xl font-bold text-gray-200">SOR</h3>
+                        <h3 class="text-xl font-bold text-ink">SOR</h3>
                     </div>
                     <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-gray-100 min-w-[120px] uppercase tracking-wide text-sm">NS</span>
+                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">NS</span>
                         <div class="flex flex-wrap gap-4 text-sm sm:text-base">
-                            <button onclick="showGrid('sor-ns-12')" class="text-brand-yellow hover:text-white font-medium underline-offset-4 hover:underline transition-all">NS 12</button>
+                            <button onclick="showGrid('sor-ns-12')" class="type-chip">NS 12</button>
                         </div>
                     </div>
                 </div>
@@ -288,16 +413,16 @@
         <!-- SECTION: BUS GRID (Mřížka karet konkrétního modelu) -->
         <section id="sec-grid" class="spa-section">
             
-            <button onclick="navigate('list-autobusy')" class="text-brand-yellow hover:text-white text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 transition-colors">
+            <button onclick="navigate('list-autobusy')" class="pill-btn">
                 &larr; Zpět na seznam autobusů
             </button>
 
             <div class="border-b border-brand-border pb-6 mb-8 flex flex-col sm:flex-row justify-between items-end gap-4">
                 <div>
-                    <h2 id="grid-title" class="text-4xl font-black tracking-tight text-white mb-2">...</h2>
-                    <p id="grid-subtitle" class="text-gray-400 font-medium leading-relaxed max-w-2xl">Evidence vozů</p>
+                    <h2 id="grid-title" class="page-title mb-3">...</h2>
+                    <p id="grid-subtitle" class="text-muted font-medium leading-relaxed max-w-2xl">Evidence vozů</p>
                 </div>
-                <div class="bg-brand-card text-brand-yellow font-bold px-5 py-2.5 rounded-full text-sm border border-brand-border">
+                <div class="bg-brand-card text-muted font-medium px-5 py-2.5 rounded-full text-sm border border-brand-border">
                     Celkem vozů: <span id="grid-count">0</span>
                 </div>
             </div>
@@ -313,9 +438,60 @@
 
     </main>
 
-    <footer class="mt-auto py-8 text-center border-t border-brand-border">
-        <p class="text-sm font-bold text-gray-600">Liberec ve hře Omsi 2 &copy; Neoficiální fanouškovský projekt</p>
+    <!-- Detail vozu -->
+    <div id="bus-modal" class="fixed inset-0 z-[90] hidden" role="dialog" aria-modal="true" aria-labelledby="modal-evc">
+        <div id="modal-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+        <div class="relative h-full overflow-y-auto flex items-start sm:items-center justify-center p-3 sm:p-6 pointer-events-none">
+            <div id="modal-card" class="pointer-events-auto relative w-full max-w-4xl bg-brand-card border border-brand-border rounded-3xl overflow-hidden shadow-2xl">
+                <div id="modal-photo" class="relative h-[42vh] sm:h-[52vh] bg-black border-b border-brand-border">
+                    <img id="modal-img" class="w-full h-full object-contain" alt="">
+                    <div id="modal-nophoto" class="absolute inset-0 hidden flex-col items-center justify-center text-faint">
+                        <span class="text-sm font-bold uppercase tracking-widest">Fotografie chybí</span>
+                    </div>
+                    <span id="modal-status" class="absolute top-4 left-4 z-10"></span>
+                    <button id="modal-close" class="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-black/60 border border-white/15 text-white text-2xl leading-none flex items-center justify-center hover:bg-brand-yellow hover:text-black transition-colors" aria-label="Zavřít">&times;</button>
+                    <button id="modal-prev" class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-black/60 border border-white/15 text-white text-3xl leading-none flex items-center justify-center hover:bg-brand-yellow hover:text-black transition-colors" aria-label="Předchozí vůz">&lsaquo;</button>
+                    <button id="modal-next" class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-black/60 border border-white/15 text-white text-3xl leading-none flex items-center justify-center hover:bg-brand-yellow hover:text-black transition-colors" aria-label="Další vůz">&rsaquo;</button>
+                    <span id="modal-counter" class="absolute bottom-4 right-4 z-10 px-3 py-1 rounded-full bg-black/60 text-xs font-bold text-gray-300"></span>
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col gap-5">
+                    <div class="flex justify-between items-start gap-4">
+                        <div>
+                            <h3 id="modal-evc" class="text-6xl font-europa text-ink leading-none"></h3>
+                            <p id="modal-type" class="mt-2 text-sm font-bold text-faint uppercase tracking-wide"></p>
+                        </div>
+                        <div class="bg-gray-100 text-black px-3 py-1.5 rounded shadow-sm border border-gray-300 flex items-center justify-center">
+                            <span id="modal-spz" class="font-spz text-2xl leading-none tracking-widest"></span>
+                        </div>
+                    </div>
+                    <div class="border-t border-brand-border pt-5">
+                        <span id="modal-badge" class="inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider rounded border mb-3"></span>
+                        <p id="modal-paint" class="text-muted leading-relaxed"></p>
+                        <p id="modal-note" class="hidden mt-4 text-muted leading-relaxed"></p>
+                    </div>
+                    <div class="flex justify-end">
+                        <a id="modal-link" href="#" target="_blank" rel="noopener" class="pill-primary hidden">Seznam autobusů <span aria-hidden="true">&#8599;</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-auto py-10 border-t border-brand-border">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center md:items-start justify-between gap-6 text-center md:text-left">
+            <div>
+                <p class="text-sm font-bold text-muted">Liberec ve hře Omsi 2</p>
+                <p class="text-xs text-faint mt-1">Neoficiální fanouškovský projekt &copy; <span id="footer-year"></span></p>
+                <p class="text-xs text-faint mt-1">Poslední aktualizace: <span id="footer-updated">&ndash;</span></p>
+            </div>
+            <div id="footer-links" class="flex flex-wrap justify-center gap-3"></div>
+        </div>
     </footer>
+
+    <button id="theme-toggle" type="button" aria-label="Přepnout na světlý režim" title="Světlý / tmavý režim">
+        <svg class="ico-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="ico-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
 
     <script>
         // --- DATA ---
@@ -324,95 +500,97 @@
                 title: 'Irisbus Citelis 12M',
                 description: 'Úprava obsahuje kompletní předělání Citelise do podoby u DPMLJ, jako napčíklad nálepky v interiéru, vybavení a velmi věrné repainty.', // ← sem napiš popis tohoto typu
                 buses: [
-                    { evc: '701', spz: '4L5 4824', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '702', spz: '4L5 4825', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '703', spz: '4L5 4826', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '704', spz: '4L5 4827', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '705', spz: '4L5 4828', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '706', spz: '6L5 6239', year: '2013', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                    { evc: '701', spz: '4L5 4824', year: '2013', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '702', spz: '4L5 4825', year: '2013', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '703', spz: '4L5 4826', year: '2013', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '704', spz: '4L5 4827', year: '2013', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '705', spz: '4L5 4828', year: '2013', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '706', spz: '6L5 6239', year: '2013', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
                 ]
             },
             'citybus-18m-2081.30': {
                 title: 'Irisbus Citybus 18M 2081.30',
                 description: 'Úprava obsahuje kompletní předělání Citybusu do podoby u DPMLJ, jako napčíklad nálepky v interiéru, vybavení a velmi věrné repainty.', // ← sem napiš popis tohoto typu
                 buses: [
-                    { evc: '307', spz: '1Z3 1890', year: '2002', status: 'hotový', paint: 'DSZO, žluto-modrá' },
-                    { evc: '308', spz: '5L7 8658', year: '2002', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                    { evc: '307', spz: '1Z3 1890', year: '2002', status: 'hotový', link: '', paint: 'DSZO, žluto-modrá' },
+                    { evc: '308', spz: '5L7 8658', year: '2002', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
                 ]
             },
             'urbanway-12m': {
                 title: 'Iveco Urbanway 12M',
                 description: 'Úprava obsahuje kompletní předělání Urbanwaye do podoby u DPMLJ, jako napčíklad nálepky v interiéru, vybavení a velmi věrné repainty a originální textury pro daný autobus.', // ← sem napiš popis tohoto typu
                 buses: [
-                    { evc: '707', spz: '5L0 4271', year: '2015', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '708', spz: '5L0 4269', year: '2015', status: 'hotový', paint: 'CVR Môc' },
-                    { evc: '709', spz: '5L0 4270', year: '2015', status: 'není', paint: 'CVR Funpark Babylon' },
-                    { evc: '710', spz: '5L0 4268', year: '2015', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '711', spz: '5L0 4781', year: '2015', status: 'hotový', paint: 'CVR Rádio Kiss, Beat a Country' },
-                    { evc: '712', spz: '5L0 4780', year: '2015', status: 'není', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '713', spz: '5L0 9564', year: '2016', status: 'není', paint: 'CVR Hitrádio contact' },
-                    { evc: '714', spz: '5L0 9563', year: '2016', status: 'hotový', paint: 'CVR Foodora' },
-                    { evc: '715', spz: '5L0 9562', year: '2016', status: 'rozpracovaný', paint: 'Pekárna u Papíráku (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '716', spz: '5L0 9561', year: '2016', status: 'hotový', paint: 'CVR Foodora a Môc' },
-                    { evc: '717', spz: '5L0 9560', year: '2016', status: 'rozpracovaný', paint: 'Rádio Žurnál (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '718', spz: '5L3 1340', year: '2017', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '719', spz: '5L3 1349', year: '2017', status: 'hotový', paint: 'Kittler Dent (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '720', spz: '6L5 5921', year: '2017', status: 'hotový', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
-                    { evc: '721', spz: '5L3 0819', year: '2017', status: 'hotový', paint: 'ELITE home reality (schema DP Liberec, zeleno-žluto-bílá)' }
+                    { evc: '707', spz: '5L0 4271', year: '2015', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '708', spz: '5L0 4269', year: '2015', status: 'hotový', link: '', paint: 'CVR Môc' },
+                    { evc: '709', spz: '5L0 4270', year: '2015', status: 'není', link: '', paint: 'CVR Funpark Babylon' },
+                    { evc: '710', spz: '5L0 4268', year: '2015', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '711', spz: '5L0 4781', year: '2015', status: 'hotový', link: '', paint: 'CVR Rádio Kiss, Beat a Country' },
+                    { evc: '712', spz: '5L0 4780', year: '2015', status: 'není', link: '', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '713', spz: '5L0 9564', year: '2016', status: 'není', link: '', paint: 'CVR Hitrádio contact' },
+                    { evc: '714', spz: '5L0 9563', year: '2016', status: 'hotový', link: '', paint: 'CVR Foodora' },
+                    { evc: '715', spz: '5L0 9562', year: '2016', status: 'rozpracovaný', link: '', paint: 'Pekárna u Papíráku (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '716', spz: '5L0 9561', year: '2016', status: 'hotový', link: '', paint: 'CVR Foodora a Môc' },
+                    { evc: '717', spz: '5L0 9560', year: '2016', status: 'rozpracovaný', link: '', paint: 'Rádio Žurnál (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '718', spz: '5L3 1340', year: '2017', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '719', spz: '5L3 1349', year: '2017', status: 'rozpracovaný', link: '', paint: 'Kittler Dent (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '720', spz: '6L5 5921', year: '2017', status: 'hotový', link: '', paint: 'TurboSTO (schema DP Liberec, zeleno-žluto-bílá)' },
+                    { evc: '721', spz: '5L3 0819', year: '2017', status: 'hotový', link: '', paint: 'ELITE home reality (schema DP Liberec, zeleno-žluto-bílá)' }
                 ]
             },
             'urbanway-12m-cng': {
                 title: 'Iveco Urbanway 12M CNG',
                 description: 'Úprava která obsahuje repainty se dá získat zde: https://discord.gg/t4UJRTarBq na serveru Linky 400 (Autorem je P3ta) .', // ← sem napiš popis tohoto typu
                 buses: [
-                    { evc: '528', spz: '7L0 0144', year: '2017', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '529', spz: '5L6 0911', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '530', spz: '5L6 0912', year: '2017', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '531', spz: '5L7 6896', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '532', spz: '5L6 0914', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '533', spz: '5L6 0915', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '534', spz: '5L6 0916', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '535', spz: '5L6 0917', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '536', spz: '5L6 0918', year: '2017', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '537', spz: '5L6 3847', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '538', spz: '5L6 3848', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '539', spz: '5L6 3849', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '540', spz: '5L6 3850', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '541', spz: '5L6 3851', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '542', spz: '5L6 3852', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '543', spz: '5L6 3853', year: '2018', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '544', spz: '5L6 3854', year: '2018', status: 'hotový', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                    { evc: '528', spz: '7L0 0144', year: '2017', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '529', spz: '5L6 0911', year: '2017', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '530', spz: '5L6 0912', year: '2017', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '531', spz: '5L7 6896', year: '2017', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '532', spz: '5L6 0914', year: '2017', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '533', spz: '5L6 0915', year: '2017', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '534', spz: '5L6 0916', year: '2017', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '535', spz: '5L6 0917', year: '2017', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '536', spz: '5L6 0918', year: '2017', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '537', spz: '5L6 3847', year: '2018', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '538', spz: '5L6 3848', year: '2018', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '539', spz: '5L6 3849', year: '2018', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '540', spz: '5L6 3850', year: '2018', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '541', spz: '5L6 3851', year: '2018', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '542', spz: '5L6 3852', year: '2018', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '543', spz: '5L6 3853', year: '2018', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '544', spz: '5L6 3854', year: '2018', status: 'hotový', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
                 ]
             },
             'sor-ns-12': {
                 title: 'SOR NS 12',
                 description: 'Úprava obsahuje bla bla bla.', // ← sem napiš popis tohoto typu
                 buses: [
-                    { evc: '722', spz: '6L0 5168', year: '2020', status: 'není', paint: 'CVR Seca CZ - podlahy FeelWood, zeleno-šedá s fotopolepem' },
-                    { evc: '723', spz: '6L0 4346', year: '2020', status: 'není', paint: 'CVR ETK - agentura práce, modrá & CVR Service Plus - chráněná dílna, bílá' },
-                    { evc: '724', spz: '6L0 4768', year: '2020', status: 'není', paint: 'CVR A-net, modro-oranžová' },
-                    { evc: '725', spz: '6L0 4979', year: '2020', status: 'není', paint: 'CVR ZUŠ Liberec, barevná grafika' },
-                    { evc: '726', spz: '6L0 5627', year: '2021', status: 'není', paint: 'CVR Bauhaus, šedo-bílá grafika' },
-                    { evc: '727', spz: '6L0 5628', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '728', spz: '6L0 5629', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '729', spz: '6L0 5630', year: '2021', status: 'není', paint: 'CVR Flector, bílo-modrá grafika' },
-                    { evc: '730', spz: '6L0 5631', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '731', spz: '6L0 5632', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '732', spz: '6L0 5633', year: '2021', status: 'není', paint: 'CVR Condrosulf, bílo-modrá grafika' },
-                    { evc: '733', spz: '6L0 5634', year: '2021', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '734', spz: '6L3 6901', year: '2022', status: 'není', paint: 'CVR Fajn skupina, modro-oranžová' },
-                    { evc: '735', spz: '6L3 6902', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '736', spz: '6L3 6903', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '737', spz: '6L3 6904', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '738', spz: '6L3 6905', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '739', spz: '6L3 6906', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '740', spz: '6L3 6907', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '741', spz: '6L3 6908', year: '2022', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '742', spz: '6L5 6576', year: '2023', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
-                    { evc: '743', spz: '6L5 6573', year: '2023', status: 'není', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
+                    { evc: '722', spz: '6L0 5168', year: '2020', status: 'není', link: '', paint: 'CVR Seca CZ - podlahy FeelWood, zeleno-šedá s fotopolepem' },
+                    { evc: '723', spz: '6L0 4346', year: '2020', status: 'není', link: '', paint: 'CVR ETK - agentura práce, modrá & CVR Service Plus - chráněná dílna, bílá' },
+                    { evc: '724', spz: '6L0 4768', year: '2020', status: 'není', link: '', paint: 'CVR A-net, modro-oranžová' },
+                    { evc: '725', spz: '6L0 4979', year: '2020', status: 'není', link: '', paint: 'CVR ZUŠ Liberec, barevná grafika' },
+                    { evc: '726', spz: '6L0 5627', year: '2021', status: 'není', link: '', paint: 'CVR Bauhaus, šedo-bílá grafika' },
+                    { evc: '727', spz: '6L0 5628', year: '2021', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '728', spz: '6L0 5629', year: '2021', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '729', spz: '6L0 5630', year: '2021', status: 'není', link: '', paint: 'CVR Flector, bílo-modrá grafika' },
+                    { evc: '730', spz: '6L0 5631', year: '2021', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '731', spz: '6L0 5632', year: '2021', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '732', spz: '6L0 5633', year: '2021', status: 'není', link: '', paint: 'CVR Condrosulf, bílo-modrá grafika' },
+                    { evc: '733', spz: '6L0 5634', year: '2021', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '734', spz: '6L3 6901', year: '2022', status: 'není', link: '', paint: 'CVR Fajn skupina, modro-oranžová' },
+                    { evc: '735', spz: '6L3 6902', year: '2022', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '736', spz: '6L3 6903', year: '2022', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '737', spz: '6L3 6904', year: '2022', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '738', spz: '6L3 6905', year: '2022', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '739', spz: '6L3 6906', year: '2022', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '740', spz: '6L3 6907', year: '2022', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '741', spz: '6L3 6908', year: '2022', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '742', spz: '6L5 6576', year: '2023', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' },
+                    { evc: '743', spz: '6L5 6573', year: '2023', status: 'není', link: '', paint: 'schema DP Liberec, zeleno-žluto-bílá' }
                 ]
             }
         };
+
+        // U každého vozu lze vyplnit link: 'https://...' (odkaz na jeho kartu v Seznamu autobusů). Tlačítko se v detailu zobrazí, jen když je link vyplněný.
 
         // --- STAVY AUTOBUSŮ ---
         // Stav se píše přímo do řádku každého vozu v databázi výše: status: 'hotový' | 'rozpracovaný' | 'není'
@@ -444,12 +622,12 @@
         }
 
         // Přepne sekci, přehraje v ní animace a vyroluje nahoru
-        function activateSection(id) {
+        function activateSection(id, opts = {}) {
             document.querySelectorAll('.spa-section').forEach(sec => sec.classList.remove('active'));
             const sec = document.getElementById('sec-' + id);
             sec.classList.add('active');
             sec.querySelectorAll('.reveal').forEach(el => { el.classList.remove('in'); io.observe(el); });
-            window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+            if (opts.scroll !== false) window.scrollTo({ top: 0, behavior: (reduceMotion || hasVT) ? 'auto' : 'smooth' });
             if (id === 'home') runCount();
         }
 
@@ -481,22 +659,22 @@
         // Text z Discordu: escapování, odkazy a zalomení řádků
         function formatText(str) {
             return escapeHtml(str)
-                .replace(/(https?:\/\/[^\s<&]+)/g, '<a href="$1" target="_blank" rel="noopener" class="text-brand-yellow underline">$1</a>')
+                .replace(/(https?:\/\/[^\s<&]+)/g, '<a href="$1" target="_blank" rel="noopener" class="text-ink underline decoration-white/30 hover:decoration-white">$1</a>')
                 .replace(/\n/g, '<br>');
         }
 
         function renderNews(items) {
             const list = document.getElementById('news-list');
             if (!items.length) {
-                list.innerHTML = '<p class="text-gray-500 text-center py-6">Zatím žádné aktuality.</p>';
+                list.innerHTML = '<p class="text-faint text-center py-6">Zatím žádné aktuality.</p>';
                 return;
             }
             list.innerHTML = items.map((n, i) => `
-                <article class="reveal lift bg-brand-card rounded-2xl p-6 border border-brand-border border-l-4 border-l-brand-yellow" style="--d:${Math.min(i, 8) * 80}ms">
-                    <p class="text-xs font-bold uppercase tracking-widest text-brand-yellow mb-2">${escapeHtml(n.date)}</p>
-                    <h3 class="text-xl font-bold text-white mb-2">${escapeHtml(n.title)}</h3>
+                <article class="reveal lift bg-brand-card rounded-2xl p-6 border border-brand-border" style="--d:${Math.min(i, 8) * 80}ms">
+                    <p class="label mb-2">${escapeHtml(n.date)}</p>
+                    <h3 class="text-xl font-bold text-ink mb-2">${escapeHtml(n.title)}</h3>
                     ${n.image && n.image.startsWith('news-img/') ? `<img src="${escapeHtml(n.image)}" alt="" loading="lazy" class="rounded-xl border border-brand-border mb-3 w-full h-auto opacity-0 transition-opacity duration-700" onload="this.classList.remove('opacity-0')">` : ''}
-                    ${n.text ? `<p class="text-gray-400 leading-relaxed">${formatText(n.text)}</p>` : ''}
+                    ${n.text ? `<p class="text-muted leading-relaxed">${formatText(n.text)}</p>` : ''}
                 </article>
             `).join('');
             observeReveals(list);
@@ -515,26 +693,75 @@
         }
 
         loadNews();
+        // --- PŘECHODY MEZI STRÁNKAMI ---
+        const hasVT = !!document.startViewTransition && !reduceMotion;
+        let vtEnabled = hasVT;
+        if (hasVT) document.documentElement.classList.add('vt');
+
+        function switchView(update) {
+            if (!vtEnabled) { update(); return; }
+            const vt = document.startViewTransition(update);
+            vt.ready.catch(() => {});
+            vt.finished.catch(() => {});
+        }
+
+        // Adresa v prohlížeči: #autobusy, #mapa, #typ-<id typu>, #<evidenční číslo vozu>
+        function setHash(h) {
+            try { history.replaceState(null, '', h ? '#' + h : location.pathname + location.search); } catch (e) {}
+        }
+
         // --- SPA NAVIGATION ---
         function navigate(sectionId) {
-            activateSection(sectionId);
+            closeModal(true);
+            setHash(sectionId === 'home' ? '' : sectionId === 'list-autobusy' ? 'autobusy' : sectionId);
+            switchView(() => activateSection(sectionId));
         }
+
+        function route() {
+            let h = '';
+            try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+            if (!h) { navigate('home'); return; }
+            if (h === 'autobusy') { navigate('list-autobusy'); return; }
+            if (h === 'mapa') { navigate('mapa'); return; }
+            if (h.startsWith('typ-') && db[h.slice(4)]) { showGrid(h.slice(4)); return; }
+            // Odkaz na konkrétní vůz: otevře seznam jeho typu a zvýrazní jeho kartu
+            const model = Object.keys(db).find(k => db[k].buses.some(b => b.evc === h));
+            if (model) showGrid(model, { focusEvc: h });
+        }
+        window.addEventListener('hashchange', route);
+
 
         // --- RENDER GRID KARET ---
         let currentModel = null;
         let currentFilter = 'all';
 
-        function showGrid(modelId) {
+        let visibleList = [];
+
+        function showGrid(modelId, opts = {}) {
+            closeModal(true);
             currentModel = modelId;
             currentFilter = 'all';
-            activateSection('grid');
+            setHash(opts.focusEvc || 'typ-' + modelId);
 
-            const categoryData = db[modelId];
-            document.getElementById('grid-title').textContent = categoryData.title;
-            document.getElementById('grid-subtitle').textContent = categoryData.description || 'Evidence vozů';
-            document.getElementById('grid-count').textContent = categoryData.buses.length;
-            renderFilter();
-            renderGrid();
+            switchView(() => {
+                activateSection('grid', { scroll: !opts.focusEvc });
+                const categoryData = db[modelId];
+                document.getElementById('grid-title').textContent = categoryData.title;
+                document.getElementById('grid-subtitle').innerHTML = formatText(categoryData.description || 'Evidence vozů');
+                document.getElementById('grid-count').textContent = categoryData.buses.length;
+                renderFilter();
+                renderGrid();
+                if (opts.focusEvc) focusCard(opts.focusEvc);
+            });
+        }
+
+        // Odroluje na kartu vozu a krátce ji zvýrazní
+        function focusCard(evc) {
+            const card = document.querySelector(`#bus-grid [data-evc="${CSS.escape(evc)}"]`);
+            if (!card) return;
+            card.scrollIntoView({ behavior: 'auto', block: 'center' });
+            card.classList.add('flash');
+            setTimeout(() => card.classList.remove('flash'), 2600);
         }
 
         function setFilter(f) {
@@ -554,11 +781,11 @@
                 const empty = counts[key] === 0;
                 const dot = key === 'all' ? '' : `<span class="w-2 h-2 rounded-full ${STATUS[key].dot}"></span>`;
                 const look = active
-                    ? 'bg-brand-yellow text-black border-brand-yellow'
-                    : 'bg-brand-card text-gray-300 border-brand-border hover:border-brand-yellow hover:text-white';
+                    ? 'bg-ink text-brand-bg border-ink'
+                    : 'chip-off';
                 return `<button onclick="setFilter('${key}')" ${empty ? 'disabled' : ''}
                     class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold transition-colors ${look} ${empty ? 'opacity-40 pointer-events-none' : ''}">
-                    ${dot}${label}<span class="${active ? 'text-black/60' : 'text-gray-500'} font-medium">${counts[key]}</span>
+                    ${dot}${label}<span class="${active ? 'text-black/60' : 'text-faint'} font-medium">${counts[key]}</span>
                 </button>`;
             }).join('');
         }
@@ -569,6 +796,7 @@
 
             const categoryData = db[currentModel];
             const list = categoryData.buses.filter(b => currentFilter === 'all' || statusOf(b) === currentFilter);
+            visibleList = list;
 
             list.forEach((bus, i) => {
                 const imgName = `${bus.evc}_1.png`;
@@ -583,17 +811,21 @@
                 const badgeText = isCVR ? 'CVR (Celovozová reklama)' : 'Schéma DP Liberec, zeleno-žluto-bílá';
 
                 const card = document.createElement('div');
-                card.className = 'reveal lift group bg-brand-card rounded-2xl overflow-hidden border border-brand-border flex flex-col';
+                card.className = 'reveal lift group cursor-pointer bg-brand-card rounded-2xl overflow-hidden border border-brand-border flex flex-col';
+                card.dataset.evc = bus.evc;
+                card.tabIndex = 0;
+                card.setAttribute('role', 'button');
+                card.setAttribute('aria-label', `Detail vozu ${bus.evc}`);
                 card.style.setProperty('--d', (Math.min(i, 8) * 60) + 'ms');
                 
                 card.innerHTML = `
-                    <div class="h-56 bg-brand-bg relative w-full border-b border-brand-border overflow-hidden">
+                    <div class="card-photo h-56 bg-brand-bg relative w-full border-b border-brand-border overflow-hidden">
                         <img src="${imgName}" alt="Bus ${bus.evc}" 
                              class="w-full h-full object-cover opacity-0 transition duration-500 group-hover:scale-105"
                              onload="this.classList.remove('opacity-0')"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                         
-                        <div class="absolute inset-0 z-0 hidden flex-col items-center justify-center text-gray-600 bg-brand-bg">
+                        <div class="absolute inset-0 z-0 hidden flex-col items-center justify-center text-faint bg-brand-bg">
                             <span class="text-sm font-bold uppercase tracking-widest">Fotografie chybí</span>
                         </div>
 
@@ -607,9 +839,9 @@
                         <div class="mb-4 flex justify-between items-start gap-3">
                             <div>
                                 <!-- Evidenční číslo s custom fontem -->
-                                <h3 class="text-4xl font-europa text-white mb-1 leading-none">${bus.evc}</h3>
-                                <p class="text-sm font-bold text-gray-500 uppercase tracking-wide">
-                                    ${categoryData.title} ${bus.year ? `<span class="text-gray-400">(${bus.year})</span>` : ''}
+                                <h3 class="text-4xl font-europa text-ink mb-1 leading-none">${bus.evc}</h3>
+                                <p class="text-sm font-bold text-faint uppercase tracking-wide">
+                                    ${categoryData.title} ${bus.year ? `<span class="text-muted">(${bus.year})</span>` : ''}
                                 </p>
                             </div>
                             <!-- SPZ s custom fontem -->
@@ -624,7 +856,7 @@
                                 ${badgeText}
                             </span>
                             
-                            <p class="text-sm font-medium text-gray-300 leading-relaxed">
+                            <p class="text-sm font-medium text-muted leading-relaxed">
                                 ${bus.paint}
                             </p>
                         </div>
@@ -635,18 +867,236 @@
             observeReveals(grid);
         }
 
-        // --- START: ukazatel rolování, stín navigace, první animace ---
+
+        // ===================== DETAIL VOZU =====================
+        const modal = document.getElementById('bus-modal');
+        const modalPhoto = document.getElementById('modal-photo');
+        const modalImg = document.getElementById('modal-img');
+        let modalIndex = -1;
+        let modalPrevHash = '';
+        let modalReturnFocus = null;
+
+        function cardFor(evc) { return document.querySelector(`#bus-grid [data-evc="${CSS.escape(evc)}"]`); }
+
+        function renderModal() {
+            const data = db[currentModel];
+            const bus = visibleList[modalIndex];
+            const st = STATUS[statusOf(bus)];
+            const isCVR = bus.paint.includes('CVR');
+
+            modalImg.style.display = '';
+            document.getElementById('modal-nophoto').style.display = '';
+            modalImg.onerror = () => { modalImg.style.display = 'none'; document.getElementById('modal-nophoto').style.display = 'flex'; };
+            modalImg.src = `${bus.evc}_1.png`;
+            modalImg.alt = `Bus ${bus.evc}`;
+
+            const statusEl = document.getElementById('modal-status');
+            statusEl.className = `absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-sm border ${st.ring} text-xs font-bold uppercase tracking-wider ${st.text}`;
+            statusEl.innerHTML = `<span class="w-2 h-2 rounded-full ${st.dot}"></span>${st.label}`;
+
+            document.getElementById('modal-evc').textContent = bus.evc;
+            document.getElementById('modal-type').textContent = data.title + (bus.year ? ` (${bus.year})` : '');
+            document.getElementById('modal-spz').textContent = bus.spz;
+            document.getElementById('modal-paint').textContent = bus.paint;
+            document.getElementById('modal-counter').textContent = `${modalIndex + 1} / ${visibleList.length}`;
+
+            const badge = document.getElementById('modal-badge');
+            badge.className = 'inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider rounded border mb-3 ' +
+                (isCVR ? 'bg-purple-900/40 text-purple-300 border-purple-700/50' : 'bg-green-900/40 text-green-300 border-green-700/50');
+            badge.textContent = isCVR ? 'CVR (Celovozová reklama)' : 'Schéma DP Liberec, zeleno-žluto-bílá';
+
+            // Volitelný delší popis vozu: { evc: '714', ..., note: 'Text' }
+            const note = document.getElementById('modal-note');
+            note.textContent = bus.note || '';
+            note.classList.toggle('hidden', !bus.note);
+
+            const multi = visibleList.length > 1;
+            document.getElementById('modal-prev').style.display = multi ? '' : 'none';
+            document.getElementById('modal-next').style.display = multi ? '' : 'none';
+            const lk = document.getElementById('modal-link');
+            if (bus.link) { lk.href = bus.link; lk.classList.remove('hidden'); }
+            else { lk.removeAttribute('href'); lk.classList.add('hidden'); }
+            setHash(bus.evc);
+        }
+
+        function openModal(evc) {
+            const i = visibleList.findIndex(b => b.evc === evc);
+            if (i < 0) return;
+            const card = cardFor(evc);
+            const photo = card && card.querySelector('.card-photo');
+            modalIndex = i;
+            modalReturnFocus = card;
+            modalPrevHash = location.hash.slice(1);
+
+            const show = () => {
+                if (photo) photo.style.viewTransitionName = '';
+                renderModal();
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                if (vtEnabled) modalPhoto.style.viewTransitionName = 'bus-hero';
+            };
+            if (vtEnabled && photo) {
+                photo.style.viewTransitionName = 'bus-hero';
+                const vt = document.startViewTransition(show);
+                vt.ready.catch(() => {});
+                vt.finished.catch(() => {}).finally(() => { modalPhoto.style.viewTransitionName = ''; });
+            } else {
+                show();
+            }
+            document.getElementById('modal-close').focus({ preventScroll: true });
+        }
+
+        function closeModal(immediate) {
+            if (modal.classList.contains('hidden')) return;
+            const bus = visibleList[modalIndex];
+            const card = bus && cardFor(bus.evc);
+            const photo = card && card.querySelector('.card-photo');
+            const animate = !immediate && vtEnabled && photo;
+            if (animate) card.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+
+            const hide = () => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                modalPhoto.style.viewTransitionName = '';
+                if (animate) photo.style.viewTransitionName = 'bus-hero';
+            };
+            if (animate) {
+                modalPhoto.style.viewTransitionName = 'bus-hero';
+                const vt = document.startViewTransition(hide);
+                vt.ready.catch(() => {});
+                vt.finished.catch(() => {}).finally(() => { photo.style.viewTransitionName = ''; });
+            } else {
+                hide();
+            }
+            if (!immediate) setHash(modalPrevHash);
+            modalIndex = -1;
+            if (!immediate && modalReturnFocus) modalReturnFocus.focus({ preventScroll: true });
+        }
+
+        function stepModal(dir) {
+            if (visibleList.length < 2) return;
+            modalIndex = (modalIndex + dir + visibleList.length) % visibleList.length;
+            renderModal();
+            if (!reduceMotion && modalImg.animate) {
+                modalImg.animate([{ opacity: 0, transform: `translateX(${dir * 36}px)` }, { opacity: 1, transform: 'none' }],
+                                 { duration: 320, easing: 'ease-out' });
+            }
+        }
+
+        document.getElementById('bus-grid').addEventListener('click', e => {
+            const card = e.target.closest('[data-evc]');
+            if (card) openModal(card.dataset.evc);
+        });
+        document.getElementById('bus-grid').addEventListener('keydown', e => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const card = e.target.closest('[data-evc]');
+            if (card && e.target === card) { e.preventDefault(); openModal(card.dataset.evc); }
+        });
+        document.getElementById('modal-backdrop').addEventListener('click', () => closeModal());
+        document.getElementById('modal-close').addEventListener('click', () => closeModal());
+        document.getElementById('modal-prev').addEventListener('click', () => stepModal(-1));
+        document.getElementById('modal-next').addEventListener('click', () => stepModal(1));
+
+        document.addEventListener('keydown', e => {
+            if (modal.classList.contains('hidden')) return;
+            if (e.key === 'Escape') { closeModal(); }
+            else if (e.key === 'ArrowLeft') { stepModal(-1); }
+            else if (e.key === 'ArrowRight') { stepModal(1); }
+            else if (e.key === 'Tab') {
+                const f = [...modal.querySelectorAll('button, a[href]')].filter(b => b.offsetParent !== null);
+                if (!f.length) return;
+                const first = f[0], last = f[f.length - 1];
+                if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+            }
+        });
+
+        // Přejetí prstem doleva/doprava
+        let touchX = null;
+        document.getElementById('modal-card').addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+        document.getElementById('modal-card').addEventListener('touchend', e => {
+            if (touchX === null) return;
+            const dx = e.changedTouches[0].clientX - touchX;
+            touchX = null;
+            if (Math.abs(dx) > 60) stepModal(dx < 0 ? 1 : -1);
+        }, { passive: true });
+
+        // ===================== PATIČKA =====================
+        // Odkazy se zobrazí jen když vyplníš url, např. { label: 'Discord', url: 'https://discord.gg/...' }
+        const FOOTER_LINKS = [
+            { label: 'Discord',  url: '' },
+            { label: 'YouTube',  url: '' },
+            { label: 'Facebook', url: '' }
+        ];
+
+        function renderFooter() {
+            document.getElementById('footer-year').textContent = new Date().getFullYear();
+            const d = new Date(document.lastModified);
+            if (!isNaN(d)) document.getElementById('footer-updated').textContent = d.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' });
+            document.getElementById('footer-links').innerHTML = FOOTER_LINKS.filter(l => l.url).map(l =>
+                `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="px-4 py-2 rounded-full border border-brand-border text-sm font-bold text-muted hover:border-white/30 hover:text-ink transition-colors">${escapeHtml(l.label)}</a>`
+            ).join('');
+        }
+
+        // ===================== ÚVODNÍ OBRAZOVKA =====================
+        function runIntro(onDone) {
+            const el = document.getElementById('intro');
+            let seen = false;
+            try { seen = sessionStorage.getItem('introSeen') === '1'; } catch (e) {}
+            if (reduceMotion || seen || location.hash) { el.remove(); onDone(); return; }
+
+            document.documentElement.classList.add('intro-active');
+            let done = false;
+            function end() {
+                if (done) return;
+                done = true;
+                try { sessionStorage.setItem('introSeen', '1'); } catch (e) {}
+                el.classList.add('hide');
+                document.documentElement.classList.remove('intro-active');
+                setTimeout(() => el.remove(), 700);
+                onDone();
+            }
+            el.addEventListener('click', end);
+            document.addEventListener('keydown', end, { once: true });
+            setTimeout(end, 2900);
+        }
+
+        // --- START ---
         (function init() {
-            const bar = document.getElementById('scroll-bar');
-            function onScroll() {
+            let ticking = false;
+
+            function update() {
+                ticking = false;
                 const h = document.documentElement.scrollHeight - window.innerHeight;
-                bar.style.transform = 'scaleX(' + (h > 0 ? window.scrollY / h : 0) + ')';
+                const p = h > 0 ? window.scrollY / h : 0;
+                if (!reduceMotion) document.documentElement.style.setProperty('--p', p.toFixed(4)); // paralaxa pozadí
+            }
+            function onScroll() {
+                if (!ticking) { ticking = true; requestAnimationFrame(update); }
             }
             window.addEventListener('scroll', onScroll, { passive: true });
             window.addEventListener('resize', onScroll);
-            onScroll();
+
+            const themeBtn = document.getElementById('theme-toggle');
+            function applyTheme(t, animate) {
+                const root = document.documentElement;
+                if (animate) { root.classList.add('theming'); setTimeout(() => root.classList.remove('theming'), 350); }
+                root.dataset.theme = t;
+                try { localStorage.setItem('theme', t); } catch (e) {}
+                const meta = document.querySelector('meta[name="theme-color"]');
+                if (meta) meta.content = t === 'light' ? '#f4f4f1' : '#0b0b0c';
+                themeBtn.setAttribute('aria-label', t === 'light' ? 'Přepnout na tmavý režim' : 'Přepnout na světlý režim');
+            }
+            themeBtn.addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', true));
+            applyTheme(document.documentElement.dataset.theme || 'dark', false);
+            renderFooter();
+            update();
+
+            // Otevření přes odkaz (#autobusy, #mapa, #714 ...) bez přechodové animace
+            if (location.hash) { vtEnabled = false; route(); vtEnabled = hasVT; }
+
             observeReveals();
-            runCount();
+            runIntro(runCount);
         })();
     </script>
 </body>
