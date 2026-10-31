@@ -289,7 +289,7 @@
                 </button>
                 <button onclick="navigate('mapa')" class="reveal lift group home-card text-left" style="--d:120ms">
                     <span class="flex items-center justify-between gap-4"><span class="card-title">Přehled mapy ve hře</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
-                    <span class="card-text">Najdeš zde mapu linek na mapě a jejich aktuální stav.</span>
+                    <span class="card-text">Linky, které na mapě jezdí, a fotky z Liberce ve hře.</span>
                 </button>
             </div>
 
@@ -322,26 +322,36 @@
             </div>
         </section>
 
-        <!-- SECTION: SCHÉMA MAPY -->
+        <!-- SECTION: PŘEHLED MAPY -->
         <section id="sec-mapa" class="spa-section">
             <button onclick="navigate('home')" class="pill-btn">
                 &larr; Zpět domů
             </button>
             <div class="mb-8">
-                <h2 class="page-title mb-3">Schéma mapy</h2>
-                <p class="text-muted font-medium">Přehled mapy Liberce ve hře Omsi 2.</p>
+                <h2 class="page-title mb-3">Přehled mapy</h2>
+                <p class="text-muted font-medium">Liberec ve hře Omsi 2: linky a fotky z mapy.</p>
             </div>
-            <div class="reveal bg-brand-card rounded-3xl border border-brand-border overflow-hidden">
-                <div class="relative min-h-[300px] bg-brand-bg flex items-center justify-center">
-                    <img src="schema-mapy.png" alt="Schéma mapy" class="w-full h-auto"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                    <div class="hidden flex-col items-center justify-center text-faint p-10 text-center">
-                        <span class="text-sm font-bold uppercase tracking-widest mb-2">Schéma mapy chybí</span>
-                        <span class="text-xs">Nahraj obrázek jako <code class="text-brand-yellow">schema-mapy.png</code> vedle index.html</span>
-                    </div>
-                </div>
+
+            <!-- Seznam linek (upravíš v poli MAP_LINES dole ve skriptu) -->
+            <div class="reveal flex items-center gap-4 mb-4">
+                <h3 class="label">Linky na mapě</h3>
+                <div class="h-px flex-1 bg-brand-border"></div>
             </div>
+            <div id="map-lines" class="reveal flex flex-col gap-3 mb-12"></div>
+
+            <!-- Galerie (fotky 1.png až 6.png vedle index.html) -->
+            <div class="reveal flex items-center gap-4 mb-4">
+                <h3 class="label">Fotky z mapy</h3>
+                <div class="h-px flex-1 bg-brand-border"></div>
+            </div>
+            <div id="map-gallery" class="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
+
+        <!-- Zvětšená fotka z galerie -->
+        <div id="map-lightbox" class="hidden fixed inset-0 z-[80] bg-black/90 items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Fotka z mapy">
+            <button id="map-lb-close" class="absolute top-4 right-4 w-11 h-11 rounded-full bg-black/60 border border-white/15 text-white text-2xl leading-none flex items-center justify-center hover:bg-brand-yellow hover:text-black transition-colors" aria-label="Zavřít">&times;</button>
+            <img id="map-lb-img" src="" alt="" class="max-w-full max-h-full rounded-2xl object-contain">
+        </div>
 
         <!-- SECTION: SEZNAM AUTOBUSŮ (Kategorie / Tabulka) -->
         <section id="sec-list-autobusy" class="spa-section">
@@ -1180,6 +1190,67 @@
 
             observeReveals();
             runIntro(runCount);
+        })();
+    </script>
+
+    <script>
+        // --- PŘEHLED MAPY: seznam linek + galerie ---
+        // Linky uprav tady: číslo, odkud, kam
+        const MAP_LINES = [
+            { line: '16', from: 'Ostašov', to: 'Fügnerova' },
+            { line: '20', from: 'Doplň začátek', to: 'Doplň konec' },
+            { line: '22', from: 'Americká', to: 'Fügnerova' }
+        ];
+        // Fotky: 1.png až 6.png vedle index.html
+        const MAP_PHOTO_COUNT = 6;
+
+        (function () {
+            const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            document.getElementById('map-lines').innerHTML = MAP_LINES.map(l => `
+                <div class="flex items-center gap-4 bg-brand-card border border-brand-border rounded-2xl px-4 py-3">
+                    <span class="font-europa text-2xl bg-brand-green text-white rounded-xl min-w-[3.5rem] text-center py-1.5">${esc(l.line)}</span>
+                    <span class="font-semibold text-ink">${esc(l.from)} <span class="text-brand-yellow mx-1">&rarr;</span> ${esc(l.to)}</span>
+                </div>`).join('');
+
+            const gallery = document.getElementById('map-gallery');
+            const lb = document.getElementById('map-lightbox');
+            const lbImg = document.getElementById('map-lb-img');
+
+            gallery.innerHTML = Array.from({ length: MAP_PHOTO_COUNT }, (_, i) => {
+                const n = i + 1;
+                return `
+                <button type="button" data-photo="${n}" class="lift relative aspect-video overflow-hidden rounded-2xl border border-brand-border bg-brand-card text-left" aria-label="Zvětšit fotku ${n}">
+                    <img src="${n}.png" alt="Fotka z mapy ${n}" loading="lazy" class="w-full h-full object-cover"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <span class="hidden absolute inset-0 flex-col items-center justify-center text-faint text-center p-4">
+                        <span class="text-xs font-bold uppercase tracking-widest mb-1">Fotka chybí</span>
+                        <span class="text-xs"><code class="text-brand-yellow">${n}.png</code></span>
+                    </span>
+                </button>`;
+            }).join('');
+
+            function openLb(n) {
+                lbImg.src = n + '.png';
+                lbImg.alt = 'Fotka z mapy ' + n;
+                lb.classList.remove('hidden');
+                lb.classList.add('flex');
+            }
+            function closeLb() {
+                lb.classList.add('hidden');
+                lb.classList.remove('flex');
+                lbImg.src = '';
+            }
+
+            gallery.addEventListener('click', e => {
+                const b = e.target.closest('[data-photo]');
+                if (!b) return;
+                const img = b.querySelector('img');
+                if (img && img.style.display === 'none') return; // fotka chybí
+                openLb(b.dataset.photo);
+            });
+            lb.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
         })();
     </script>
 </body>
