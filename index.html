@@ -244,6 +244,15 @@
         html[data-theme="light"] .bg-green-900\/40 { background: rgba(8,84,71,.1); }
         html[data-theme="light"] .text-green-300 { color: #085447; }
         html[data-theme="light"] .border-green-700\/50 { border-color: rgba(8,84,71,.35); }
+
+        /* Dopravci v seznamu autobusů */
+        .carrier-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+        .carrier-logo-box {
+            width: 60px; height: 60px; border-radius: 16px; background: #fff; border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center; padding: 7px; flex-shrink: 0;
+        }
+        .carrier-logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .carrier-name { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; color: var(--ink); }
     </style>
 </head>
 <body class="bg-brand-bg text-ink font-sans min-h-screen flex flex-col antialiased selection:bg-brand-yellow selection:text-black">
@@ -360,85 +369,124 @@
             </button>
             <div class="mb-8">
                 <h2 class="page-title mb-3">Autobusy</h2>
-                <p class="text-muted font-medium">Přehled značek a typů ve vozovém parku.</p>
+                <p class="text-muted font-medium">Vyber dopravce a typ vozidla.</p>
             </div>
 
             <!-- Tabulka Značek (Inspirováno fotkou č. 4) -->
-            <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-16">
+
+                <!-- ===== DOPRAVCE 1 ===== -->
+                <!-- Logo: nahraj soubor logo1.png vedle index.html (u dalšího dopravce logo2.png atd.). Když soubor chybí, logo se skryje. -->
+                <div data-carrier>
+                    <div class="carrier-head reveal" style="--d:0ms">
+                        <div class="carrier-logo-box"><img src="logo1.png" alt="" onerror="this.parentElement.style.display='none'"></div>
+                        <div>
+                            <h3 class="carrier-name">Dopravní podnik měst Liberce a Jablonce nad Nisou a.s.</h3>
+                            <p class="carrier-count text-muted text-sm mt-1"></p>
+                        </div>
+                    </div>
+                <div class="flex flex-col gap-6">
                 
-                <!-- Irisbus -->
-                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:0ms">
-                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
-                        <h3 class="text-xl font-bold text-ink">Irisbus</h3>
+                    <!-- Irisbus -->
+                    <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:0ms">
+                        <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                            <h3 class="text-xl font-bold text-ink">Irisbus</h3>
+                        </div>
+                        <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Citelis</span>
+                            <div class="flex flex-wrap gap-4">
+                                <button onclick="showGrid('citelis-12m')" class="type-chip">Citelis 12M</button>
+                            </div>
+                            </div>
+                        <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Citybus</span>
+                            <div class="flex flex-wrap gap-4">
+                                <button onclick="showGrid('citybus-18m-2081.30')" class="type-chip">Citybus 18M 2081.30</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Citelis</span>
-                        <div class="flex flex-wrap gap-4">
-                            <button onclick="showGrid('citelis-12m')" class="type-chip">Citelis 12M</button>
-                        </div>
-                        </div>
-                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Citybus</span>
-                        <div class="flex flex-wrap gap-4">
-                            <button onclick="showGrid('citybus-18m-2081.30')" class="type-chip">Citybus 18M 2081.30</button>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Iveco -->
-                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
-                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
-                        <h3 class="text-xl font-bold text-ink">Iveco</h3>
-                    </div>
-                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Urbanway</span>
-                        <div class="flex flex-wrap gap-4 text-sm sm:text-base">
-                            <button onclick="showGrid('urbanway-12m')" class="type-chip">Urbanway 12M</button>
-                            <button onclick="showGrid('urbanway-12m-cng')" class="type-chip">Urbanway 12M CNG</button>
+                    <!-- Iveco -->
+                    <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
+                        <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                            <h3 class="text-xl font-bold text-ink">Iveco</h3>
+                        </div>
+                        <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Urbanway</span>
+                            <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                                <button onclick="showGrid('urbanway-12m')" class="type-chip">Urbanway 12M</button>
+                                <button onclick="showGrid('urbanway-12m-cng')" class="type-chip">Urbanway 12M CNG</button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Solaris -->
-                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
-                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
-                        <h3 class="text-xl font-bold text-ink">Solaris</h3>
-                    </div>
-                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Urbino IV</span>
-                        <div class="flex flex-wrap gap-4 text-sm sm:text-base">
-                            <button onclick="showGrid('urbino-12-IV')" class="type-chip">Urbino 12 IV</button>
-                            <button onclick="showGrid('urbino-12-IV-CNG')" class="type-chip">Urbino 12 IV CNG</button>
-                            <button onclick="showGrid('urbino-18-IV-CNG')" class="type-chip">Urbino 18 IV CNG</button>                            
+                    <!-- Solaris -->
+                    <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
+                        <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                            <h3 class="text-xl font-bold text-ink">Solaris</h3>
+                        </div>
+                        <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Urbino IV</span>
+                            <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                                <button onclick="showGrid('urbino-12-IV')" class="type-chip">Urbino 12 IV</button>
+                                <button onclick="showGrid('urbino-12-IV-CNG')" class="type-chip">Urbino 12 IV CNG</button>
+                                <button onclick="showGrid('urbino-18-IV-CNG')" class="type-chip">Urbino 18 IV CNG</button>                            
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- SOR -->
-                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:240ms">
-                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
-                        <h3 class="text-xl font-bold text-ink">SOR</h3>
-                    </div>
-                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">NS</span>
-                        <div class="flex flex-wrap gap-4 text-sm sm:text-base">
-                            <button onclick="showGrid('sor-ns-12')" class="type-chip">NS 12</button>
+                    <!-- SOR -->
+                    <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:240ms">
+                        <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                            <h3 class="text-xl font-bold text-ink">SOR</h3>
+                        </div>
+                        <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">NS</span>
+                            <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                                <button onclick="showGrid('sor-ns-12')" class="type-chip">NS 12</button>
+                            </div>
                         </div>
                     </div>
-                </div>
                 
-                <!-- Karosa -->
-                <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
-                    <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
-                        <h3 class="text-xl font-bold text-ink">Karosa</h3>
-                    </div>
-                    <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">B 931</span>
-                        <div class="flex flex-wrap gap-4 text-sm sm:text-base">
-                            <button onclick="showGrid('karosa-b931e')" class="type-chip">B 931E.1703</button>                    
+                    <!-- Karosa -->
+                    <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:120ms">
+                        <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                            <h3 class="text-xl font-bold text-ink">Karosa</h3>
+                        </div>
+                        <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">B 931</span>
+                            <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                                <button onclick="showGrid('karosa-b931e')" class="type-chip">B 931E.1703</button>                    
+                            </div>
                         </div>
                     </div>
                 </div>
+                </div>
+
+                <!-- ===== DOPRAVCE 2 ===== -->
+                <div data-carrier>
+                    <div class="carrier-head reveal" style="--d:0ms">
+                        <div class="carrier-logo-box"><img src="logo2.png" alt="" onerror="this.parentElement.style.display='none'"></div>
+                        <div>
+                            <h3 class="carrier-name">BusLine MHD</h3>
+                            <p class="carrier-count text-muted text-sm mt-1"></p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-6">
+                        <div class="reveal lift border border-brand-border rounded-2xl overflow-hidden" style="--d:0ms">
+                            <div class="bg-brand-grayHeader px-4 py-3 border-b border-brand-border">
+                                <h3 class="text-xl font-bold text-ink">Iveco</h3>
+                            </div>
+                            <div class="bg-brand-rowGreen px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                <span class="font-bold text-ink min-w-[120px] uppercase tracking-wide text-sm">Urbanway</span>
+                                <div class="flex flex-wrap gap-4 text-sm sm:text-base">
+                                    <button onclick="showGrid('urbanway-12m-cng-busline')" class="type-chip">Urbanway 12M CNG</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -606,6 +654,16 @@
                     { evc: '310', spz: '1BN 7900', year: '2016', status: 'hotový', link: 'https://seznam-autobusu.cz/vuz/66918', paint: 'MHD Znojmo, červená' }
                 ]
             },
+            'urbanway-12m-cng-busline': {
+                title: 'Iveco Urbanway 12M CNG',
+                description: '', // ← sem napiš popis tohoto typu (BusLine MHD)
+                badge: 'Standardní nátěr', // štítek u vozů bez CVR; když chybí, použije se 'Schéma DP Liberec, zeleno-žluto-bílá'
+                buses: [
+                    { evc: '623', spz: '5L2 0295', year: '2015', status: 'není', link: '', paint: 'bílá' },
+                    { evc: '624', spz: '5L2 0294', year: '2015', status: 'není', link: '', paint: 'bílá' }
+                ]
+            },
+
             'sor-ns-12': {
                 title: 'SOR NS 12',
                 description: 'Úprava obsahuje bla bla bla.', // ← sem napiš popis tohoto typu
@@ -854,6 +912,7 @@
             list.forEach((bus, i) => {
                 const imgName = `${bus.evc}_1.png`;
                 const isCVR = bus.paint.includes('CVR');
+                const hasPaint = !!bus.paint;
                 const st = STATUS[statusOf(bus)];
 
                 // Určení barvy štítku na základě nátěru
@@ -861,7 +920,7 @@
                     ? 'bg-purple-900/40 text-purple-300 border-purple-700/50' 
                     : 'bg-green-900/40 text-green-300 border-green-700/50';
                 
-                const badgeText = isCVR ? 'CVR (Celovozová reklama)' : 'Schéma DP Liberec, zeleno-žluto-bílá';
+                const badgeText = isCVR ? 'CVR (Celovozová reklama)' : (categoryData.badge || 'Schéma DP Liberec, zeleno-žluto-bílá');
 
                 const card = document.createElement('div');
                 card.className = 'reveal lift group cursor-pointer bg-brand-card rounded-2xl overflow-hidden border border-brand-border flex flex-col';
@@ -903,7 +962,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-auto border-t border-brand-border pt-4">
+                        ${hasPaint ? `<div class="mt-auto border-t border-brand-border pt-4">
                             <!-- Barevný štítek typu reklamy -->
                             <span class="inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider rounded border ${badgeColorClass} mb-3">
                                 ${badgeText}
@@ -912,7 +971,7 @@
                             <p class="text-sm font-medium text-muted leading-relaxed">
                                 ${bus.paint}
                             </p>
-                        </div>
+                        </div>` : ''}
                     </div>
                 `;
                 grid.appendChild(card);
@@ -956,7 +1015,9 @@
             const badge = document.getElementById('modal-badge');
             badge.className = 'inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider rounded border mb-3 ' +
                 (isCVR ? 'bg-purple-900/40 text-purple-300 border-purple-700/50' : 'bg-green-900/40 text-green-300 border-green-700/50');
-            badge.textContent = isCVR ? 'CVR (Celovozová reklama)' : 'Schéma DP Liberec, zeleno-žluto-bílá';
+            badge.textContent = isCVR ? 'CVR (Celovozová reklama)' : (data.badge || 'Schéma DP Liberec, zeleno-žluto-bílá');
+            badge.style.display = bus.paint ? '' : 'none';
+            document.getElementById('modal-paint').style.display = bus.paint ? '' : 'none';
 
             // Volitelný delší popis vozu: { evc: '714', ..., note: 'Text' }
             const note = document.getElementById('modal-note');
@@ -1182,6 +1243,17 @@
             }
             themeBtn.addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', true));
             applyTheme(document.documentElement.dataset.theme || 'dark', false);
+
+            // Počet vozidel u každého dopravce (sečte se z typů, na které z jeho sekce vedou tlačítka)
+            document.querySelectorAll('[data-carrier]').forEach(c => {
+                let n = 0;
+                c.querySelectorAll('button[onclick^="showGrid("]').forEach(b => {
+                    const m = b.getAttribute('onclick').match(/showGrid\('([^']+)'\)/);
+                    if (m && db[m[1]]) n += db[m[1]].buses.length;
+                });
+                const el = c.querySelector('.carrier-count');
+                if (el) el.textContent = n + ' ' + (n === 1 ? 'vozidlo' : (n >= 2 && n <= 4 ? 'vozidla' : 'vozidel'));
+            });
             renderFooter();
             update();
 
