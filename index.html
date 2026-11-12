@@ -561,7 +561,7 @@
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center md:items-start justify-between gap-6 text-center md:text-left">
             <div>
                 <p class="text-sm font-bold text-muted">Liberec ve hře Omsi 2</p>
-                <p class="text-xs text-faint mt-1">Neoficiální fanouškovský projekt &copy; <span id="footer-year"></span></p>
+                <p class="text-xs text-faint mt-1">&copy; <span id="footer-year"></span></p>
                 <p class="text-xs text-faint mt-1">Poslední aktualizace: <span id="footer-updated">&ndash;</span></p>
             </div>
             <div id="footer-links" class="flex flex-wrap justify-center gap-3"></div>
@@ -932,7 +932,7 @@
                 
                 card.innerHTML = `
                     <div class="card-photo h-56 bg-brand-bg relative w-full border-b border-brand-border overflow-hidden">
-                        <img src="${imgName}" alt="Bus ${bus.evc}" 
+                        <img src="${imgName}" alt="Bus ${bus.evc}" loading="lazy" decoding="async"
                              class="w-full h-full object-cover opacity-0 transition duration-500 group-hover:scale-105"
                              onload="this.classList.remove('opacity-0')"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
@@ -1031,6 +1031,12 @@
             if (bus.link) { lk.href = bus.link; lk.classList.remove('hidden'); }
             else { lk.removeAttribute('href'); lk.classList.add('hidden'); }
             setHash(bus.evc);
+
+            // Předem načte fotky sousedních vozů, aby se při listování zobrazily hned
+            [-1, 1].forEach(d => {
+                const nb = visibleList[modalIndex + d];
+                if (nb) { const im = new Image(); im.decoding = 'async'; im.src = `${nb.evc}_1.png`; }
+            });
         }
 
         function openModal(evc) {
